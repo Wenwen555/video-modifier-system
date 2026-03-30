@@ -1,0 +1,235 @@
+{
+  "main": {
+    "id": "959f69420679bc2a",
+    "type": "split",
+    "children": [
+      {
+        "id": "e3709fe61a2d6e8e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4daac9f209693c27",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "潜在的视频数据结构创新路线.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "潜在的视频数据结构创新路线"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "678d604a1aca0527",
+    "type": "split",
+    "children": [
+      {
+        "id": "9f919bd93826c69e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1e0d34a9862b7c7c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "864bbbdcf93f8cb1",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "afe35c6f58a0d1de",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f01a160147d0aa57",
+    "type": "split",
+    "children": [
+      {
+        "id": "4f42b4ffa85bcb01",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5cd1f4f377c08dd2",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "MT-MG提高视频数据质量的思路.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "MT-MG提高视频数据质量的思路 的反向链接列表"
+            }
+          },
+          {
+            "id": "39bd7558d62c9a76",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "MT-MG提高视频数据质量的思路.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "MT-MG提高视频数据质量的思路 的出链列表"
+            }
+          },
+          {
+            "id": "d6a9ebc76f195875",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "f1b0c6692080850a",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "1b2ab91443e999a9",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "潜在的视频数据结构创新路线.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "潜在的视频数据结构创新路线 的大纲"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "1e0d34a9862b7c7c",
+  "lastOpenFiles": [
+    "site/search/search_index.json",
+    "site/search",
+    "site/99-归档/gpt总结/index.html",
+    "site/99-归档/gpt总结",
+    "site/99-归档",
+    "site/03-文献支撑/算子-论文映射/index.html",
+    "site/03-文献支撑/文献支撑与最新趋势总结/index.html",
+    "site/03-文献支撑/算子-论文映射",
+    "site/03-文献支撑/文献支撑与最新趋势总结",
+    "site/03-文献支撑",
+    "site/02-预设管线/预设管线与文献对照/index.html",
+    "site/assets/images/favicon.png",
+    "算子系统/README.md",
+    "算子系统/index.md",
+    "算子系统/标注生成算子.md",
+    "算子系统/00-总览/统一中间态与数据流协议.md",
+    "算子系统/99-归档/gpt总结.md",
+    "算子系统/03-文献支撑/算子-论文映射.md",
+    "算子系统/03-文献支撑/文献支撑与最新趋势总结.md",
+    "算子系统/02-预设管线/预设管线与文献对照.md",
+    "算子系统/01-算子定义/A9-标注生成算子.md",
+    "算子系统/01-算子定义/A8-时序定位与变化摘要算子.md",
+    "算子系统/01-算子定义/A7-空间聚焦算子.md",
+    "算子系统/01-算子定义/A6-文本抽取算子.md",
+    "算子系统/01-算子定义/A5-去重算子.md",
+    "算子系统/01-算子定义/A4-自适应采样算子.md",
+    "算子系统/01-算子定义/A3-采样算子.md",
+    "算子系统/01-算子定义/A2-片段清洗算子.md",
+    "算子系统/01-算子定义/A10-候选选择与质量裁决算子.md",
+    "算子系统/01-算子定义/A1-划分算子.md",
+    "算子系统/00-总览/高自由度视频算子系统总览.md",
+    "算子系统/统一中间态与数据流协议.md",
+    "算子系统/预设管线与文献对照.md",
+    "算子系统/候选选择与质量裁决算子.md",
+    "算子系统/高自由度算子系统搭建.md",
+    "Idea/IDEA_REPORT.md",
+    "Idea/IDEA_REPORT copy.md",
+    "Auto-claude-code-research-in-sleep/docs/wechat_group.jpg",
+    "Auto-claude-code-research-in-sleep/docs/hero_interaction.svg",
+    "Auto-claude-code-research-in-sleep/docs/hero_implement.svg",
+    "Auto-claude-code-research-in-sleep/docs/hero_idea.svg",
+    "Auto-claude-code-research-in-sleep/docs/hero_combined.svg",
+    "Auto-claude-code-research-in-sleep/docs/auto_review_score_curve.png",
+    "Auto-claude-code-research-in-sleep/docs/aris_logo.svg",
+    "Auto-claude-code-research-in-sleep/assets/paper_illustration_demo.png",
+    "Auto-claude-code-research-in-sleep/assets/feishu_push.png"
+  ]
+}

@@ -1,0 +1,65 @@
+site_name: Video Operator System
+site_description: Documentation for the video operator system.
+docs_dir: 算子系统
+site_dir: site
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: indigo
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - 首页: index.md
+  - 总览:
+      - 总览: 00-总览/高自由度视频算子系统总览.md
+      - 统一协议: 00-总览/统一中间态与数据流协议.md
+  - 算子定义:
+      - A1 划分算子: 01-算子定义/A1-划分算子.md
+      - A2 片段清洗算子: 01-算子定义/A2-片段清洗算子.md
+      - A3 采样算子: 01-算子定义/A3-采样算子.md
+      - A4 自适应采样算子: 01-算子定义/A4-自适应采样算子.md
+      - A5 去重算子: 01-算子定义/A5-去重算子.md
+      - A6 文本抽取算子: 01-算子定义/A6-文本抽取算子.md
+      - A7 空间聚焦算子: 01-算子定义/A7-空间聚焦算子.md
+      - A8 时序定位与变化摘要算子: 01-算子定义/A8-时序定位与变化摘要算子.md
+      - A9 标注生成算子: 01-算子定义/A9-标注生成算子.md
+      - A10 候选选择与质量裁决算子: 01-算子定义/A10-候选选择与质量裁决算子.md
+  - 预设管线:
+      - 预设管线与文献对照: 02-预设管线/预设管线与文献对照.md
+  - 文献支撑:
+      - 算子-论文映射: 03-文献支撑/算子-论文映射.md
+      - 文献支撑与最新趋势总结: 03-文献支撑/文献支撑与最新趋势总结.md
+  - 归档:
+      - GPT 总结: 99-归档/gpt总结.md
