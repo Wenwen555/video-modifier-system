@@ -20,48 +20,27 @@
 
 ## Architecture
 
-当前版本的系统分为两层。
+当前版本采用双层结构：基础系统层负责稳定入口和预算控制，文献强驱动层负责高价值采样、时空证据和标注构建。
 
-### Base system layer
-这一层负责建立稳定入口、控制预算和组织基础证据。
+架构页包含以下内容：
 
-- A1 `Partition`: 将原视频切成可处理片段
-- A2 `Segment Cleaning`: 清理低质量或低价值片段
-- A3 `Sampling`: 生成低成本基础样本
-- A5 `Deduplication`: 压缩冗余样本
-- A6 `Text Extraction`: 汇聚 OCR、字幕和 ASR 文本证据
+- 分层设计
+- 主数据流
+- 中间态结构
+- 数据血缘关系
+- preset 对照
 
-### Literature-driven layer
-这一层负责提供当前文献最强调的高价值能力。
-
-- A4 `Adaptive Sampling`: 保留关键时间点和高信息密度样本
-- A7 `Spatial Focus`: 生成对象级或区域级证据
-- A8 `Temporal Localization and Change Summary`: 显式建模时间边界与变化事件
-- A9 `Annotation Generation`: 生成 caption、QA 和 summary
-- A10 `Selection and Quality Judgement`: 选择高质量候选并过滤低质量结果
+详见 [Architecture](00-总览/Architecture.md)。
 
 ## Data Flow
 
 系统主数据流固定为：
 
 ```text
-Raw Video
-  -> A1 Partition
-  -> A2 Segment Cleaning
-  -> A3 Sampling / A4 Adaptive Sampling
-  -> A5 Deduplication
-  -> A6 Text Extraction
-  -> A7 Spatial Focus
-  -> A8 Temporal Localization and Change Summary
-  -> A9 Annotation Generation
-  -> A10 Selection and Quality Judgement
+Raw Video -> A1 -> A2 -> A3/A4 -> A5 -> A6/A7/A8 -> A9 -> A10
 ```
 
-其中有三点需要注意：
-
-1. `A3` 和 `A4` 可以二选一，也可以并行运行。
-2. `A6`、`A7`、`A8` 共享 `samples`，分别产出文本、空间和时间维度证据。
-3. `A9` 只消费中间态中的结构化证据，不直接绕过协议读取原视频生成结果。
+更完整的串并行关系、数据血缘和 preset 组合，见 [Architecture](00-总览/Architecture.md)。
 
 ## Intermediate Representation
 
@@ -133,6 +112,7 @@ A1 -> A2(strict) -> A4 -> A5 -> A6 + A7 + A8 -> A9 -> A10(strict)
 
 ### Core docs
 - [高自由度视频算子系统总览](00-总览/高自由度视频算子系统总览.md)
+- [Architecture](00-总览/Architecture.md)
 - [统一中间态与数据流协议](00-总览/统一中间态与数据流协议.md)
 
 ### Operator reference
