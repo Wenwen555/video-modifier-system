@@ -185,6 +185,8 @@
   },
   "active": "1e0d34a9862b7c7c",
   "lastOpenFiles": [
+    "算子系统/requirements-docs.txt",
+    "算子系统/mkdocs.yml",
     "site/search/search_index.json",
     "site/search",
     "site/99-归档/gpt总结/index.html",
@@ -194,8 +196,6 @@
     "site/03-文献支撑/文献支撑与最新趋势总结/index.html",
     "site/03-文献支撑/算子-论文映射",
     "site/03-文献支撑/文献支撑与最新趋势总结",
-    "site/03-文献支撑",
-    "site/02-预设管线/预设管线与文献对照/index.html",
     "site/assets/images/favicon.png",
     "算子系统/README.md",
     "算子系统/index.md",
