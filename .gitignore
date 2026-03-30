@@ -1,4 +1,6 @@
 site/
+算子系统/.site/
+.site/
 .venv/
 venv/
 __pycache__/
