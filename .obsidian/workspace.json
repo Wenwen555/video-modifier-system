@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "算子系统/00-总览/Architecture.md",
+                "file": "算子系统/01-算子定义/A1-划分算子.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Architecture"
+              "title": "A1-划分算子"
             }
           }
         ]
@@ -157,13 +157,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "算子系统/00-总览/Architecture.md",
+                "file": "算子系统/01-算子定义/A1-划分算子.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Architecture 的大纲"
+              "title": "A1-划分算子 的大纲"
             }
           }
         ],
@@ -171,7 +171,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -186,9 +187,12 @@
   },
   "active": "4daac9f209693c27",
   "lastOpenFiles": [
+    "算子系统/01-算子定义/A1-panda-划分算子.md",
+    "算子系统/01-算子定义/A1-划分算子.md",
+    "mermaid-diagram.png",
+    "算子系统/00-总览/Architecture.md",
     "算子系统/index.md",
     "潜在的视频数据结构创新路线.md",
-    "算子系统/00-总览/Architecture.md",
     "算子系统/requirements-docs.txt",
     "算子系统/mkdocs.yml",
     "site/search/search_index.json",
@@ -216,13 +220,11 @@
     "算子系统/01-算子定义/A3-采样算子.md",
     "算子系统/01-算子定义/A2-片段清洗算子.md",
     "算子系统/01-算子定义/A10-候选选择与质量裁决算子.md",
-    "算子系统/01-算子定义/A1-划分算子.md",
     "算子系统/00-总览/高自由度视频算子系统总览.md",
     "算子系统/统一中间态与数据流协议.md",
     "算子系统/预设管线与文献对照.md",
     "算子系统/候选选择与质量裁决算子.md",
     "算子系统/高自由度算子系统搭建.md",
-    "Idea/IDEA_REPORT.md",
     "Auto-claude-code-research-in-sleep/docs/wechat_group.jpg",
     "Auto-claude-code-research-in-sleep/docs/hero_interaction.svg",
     "Auto-claude-code-research-in-sleep/docs/hero_implement.svg",
@@ -230,7 +232,6 @@
     "Auto-claude-code-research-in-sleep/docs/hero_combined.svg",
     "Auto-claude-code-research-in-sleep/docs/auto_review_score_curve.png",
     "Auto-claude-code-research-in-sleep/docs/aris_logo.svg",
-    "Auto-claude-code-research-in-sleep/assets/paper_illustration_demo.png",
-    "Auto-claude-code-research-in-sleep/assets/feishu_push.png"
+    "Auto-claude-code-research-in-sleep/assets/paper_illustration_demo.png"
   ]
 }

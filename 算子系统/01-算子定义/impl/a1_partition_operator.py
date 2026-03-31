@@ -384,6 +384,7 @@ class A1_Partition_Operator(Modifier):
 
         return self._partition_fixed(video, cfg), "FIXED_FALLBACK"
 
+
     def _normalize_segments(
         self,
         video: VideoMetadata,
@@ -626,6 +627,7 @@ class A1_Partition_Operator(Modifier):
 
         raise ValueError(f"Unsupported transcript file: {path}")
 
+    # 粗粒度的类型转换，支持 dict、dataclass 实例和原始类型的灵活输入
     @staticmethod
     def _coerce_video_metadata(video: VideoMetadata | dict[str, Any]) -> VideoMetadata:
         if isinstance(video, VideoMetadata):
