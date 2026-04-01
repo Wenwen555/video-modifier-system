@@ -3,12 +3,102 @@ hide:
   - toc
 ---
 
+<style>
+  .entry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .entry-card,
+  .operator-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.2rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 1.1rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(249, 251, 255, 0.9) 100%);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .entry-card__desc,
+  .operator-group__desc {
+    margin: 0;
+    line-height: 1.75;
+    color: rgba(15, 23, 42, 0.76);
+  }
+
+  .entry-card__links,
+  .operator-group__chips {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .entry-card__links a,
+  .operator-chip {
+    display: block;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.92);
+    text-decoration: none;
+    line-height: 1.45;
+    font-weight: 600;
+  }
+
+  .operator-section-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .operator-group__eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #155e75;
+  }
+
+  .operator-group h3 {
+    margin: 0;
+  }
+
+  .operator-chip {
+    color: inherit;
+  }
+
+  .operator-chip span {
+    display: inline-block;
+    min-width: 2.5rem;
+    margin-right: 0.65rem;
+    padding: 0.18rem 0.48rem;
+    border-radius: 999px;
+    background: rgba(15, 118, 110, 0.12);
+    color: #0f766e;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 76.1875em) {
+    .entry-grid,
+    .operator-section-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
 <div class="landing-hero">
   <p class="landing-overline">Video Operator System</p>
   <h1>视频算子系统</h1>
   <p class="landing-subtitle">
-    面向视频增强与标注构建的高自由度算子系统。
-    当前版本围绕 10 个原子算子组织，覆盖从片段划分、采样、证据提取到标注生成与质量裁决的完整链路。
+    面向视频增强、样本构建与标注生成的高自由度算子系统。当前版本围绕 10 个原子算子组织，
+    覆盖从片段划分、采样、证据提取到标注生成与质量裁决的完整链路。
   </p>
 </div>
 
@@ -42,9 +132,9 @@ hide:
     </div>
     <p class="entry-card__desc">先理解系统目标、结构分层与统一协议。</p>
     <div class="entry-card__links">
-      <a href="00-总览/高自由度视频算子系统总览.md">高自由度视频算子系统总览</a>
-      <a href="00-总览/Architecture.md">Architecture</a>
-      <a href="00-总览/统一中间态与数据流协议.md">统一中间态与数据流协议</a>
+      <a href="00-总览/高自由度视频算子系统总览/">高自由度视频算子系统总览</a>
+      <a href="00-总览/Architecture/">Architecture</a>
+      <a href="00-总览/统一中间态与数据流协议/">统一中间态与数据流协议</a>
     </div>
   </section>
 
@@ -54,10 +144,10 @@ hide:
     </div>
     <p class="entry-card__desc">查看 A1 到 A10 的接口、实现边界和技术文档。</p>
     <div class="entry-card__links">
-      <a href="01-算子定义/A1-划分算子.md">A1-划分算子</a>
-      <a href="01-算子定义/A3-采样算子.md">A3-采样算子</a>
-      <a href="01-算子定义/A4-自适应采样算子.md">A4-自适应采样算子</a>
-      <a href="01-算子定义/A2-片段清洗算子.md">其余算子见左侧导航</a>
+      <a href="01-算子定义/A1-划分算子/">A1-划分算子</a>
+      <a href="01-算子定义/A3-采样算子/">A3-采样算子</a>
+      <a href="01-算子定义/A4-自适应采样算子/">A4-自适应采样算子</a>
+      <a href="01-算子定义/A2-片段清洗算子/">其余算子见左侧导航</a>
     </div>
   </section>
 
@@ -67,26 +157,49 @@ hide:
     </div>
     <p class="entry-card__desc">查看经典工作对照、算子映射与近期文献趋势。</p>
     <div class="entry-card__links">
-      <a href="02-预设管线/预设管线与文献对照.md">预设管线与文献对照</a>
-      <a href="03-文献支撑/算子-论文映射.md">算子-论文映射</a>
-      <a href="03-文献支撑/文献支撑与最新趋势总结.md">文献支撑与最新趋势总结</a>
+      <a href="02-预设管线/预设管线与文献对照/">预设管线与文献对照</a>
+      <a href="03-文献支撑/算子-论文映射/">算子-论文映射</a>
+      <a href="03-文献支撑/文献支撑与最新趋势总结/">文献支撑与最新趋势总结</a>
     </div>
   </section>
 </div>
 
 ## 算子索引
 
-<div class="operator-chip-grid">
-  <a class="operator-chip" href="01-算子定义/A1-划分算子.md"><span>A1</span>划分</a>
-  <a class="operator-chip" href="01-算子定义/A2-片段清洗算子.md"><span>A2</span>片段清洗</a>
-  <a class="operator-chip" href="01-算子定义/A3-采样算子.md"><span>A3</span>采样</a>
-  <a class="operator-chip" href="01-算子定义/A4-自适应采样算子.md"><span>A4</span>自适应采样</a>
-  <a class="operator-chip" href="01-算子定义/A5-去重算子.md"><span>A5</span>去重</a>
-  <a class="operator-chip" href="01-算子定义/A6-文本抽取算子.md"><span>A6</span>文本抽取</a>
-  <a class="operator-chip" href="01-算子定义/A7-空间聚焦算子.md"><span>A7</span>空间聚焦</a>
-  <a class="operator-chip" href="01-算子定义/A8-时序定位与变化摘要算子.md"><span>A8</span>时序定位与变化摘要</a>
-  <a class="operator-chip" href="01-算子定义/A9-标注生成算子.md"><span>A9</span>标注生成</a>
-  <a class="operator-chip" href="01-算子定义/A10-候选选择与质量裁决算子.md"><span>A10</span>质量裁决</a>
+<div class="operator-section-grid">
+  <section class="operator-group">
+    <p class="operator-group__eyebrow">Foundation</p>
+    <h3>基础链路</h3>
+    <p class="operator-group__desc">负责建立稳定的片段入口、基础采样、去重压缩和文本证据汇聚。</p>
+    <div class="operator-group__chips">
+      <a class="operator-chip" href="01-算子定义/A1-划分算子/"><span>A1</span>划分</a>
+      <a class="operator-chip" href="01-算子定义/A2-片段清洗算子/"><span>A2</span>片段清洗</a>
+      <a class="operator-chip" href="01-算子定义/A3-采样算子/"><span>A3</span>采样</a>
+      <a class="operator-chip" href="01-算子定义/A5-去重算子/"><span>A5</span>去重</a>
+      <a class="operator-chip" href="01-算子定义/A6-文本抽取算子/"><span>A6</span>文本抽取</a>
+    </div>
+  </section>
+
+  <section class="operator-group">
+    <p class="operator-group__eyebrow">Enhancement</p>
+    <h3>增强链路</h3>
+    <p class="operator-group__desc">负责在有限预算内补强时序敏感性、空间证据和变化建模能力。</p>
+    <div class="operator-group__chips">
+      <a class="operator-chip" href="01-算子定义/A4-自适应采样算子/"><span>A4</span>自适应采样</a>
+      <a class="operator-chip" href="01-算子定义/A7-空间聚焦算子/"><span>A7</span>空间聚焦</a>
+      <a class="operator-chip" href="01-算子定义/A8-时序定位与变化摘要算子/"><span>A8</span>时序定位与变化摘要</a>
+    </div>
+  </section>
+
+  <section class="operator-group">
+    <p class="operator-group__eyebrow">Generation</p>
+    <h3>生成与裁决</h3>
+    <p class="operator-group__desc">负责把多路证据组织成训练标注，并在最终出口做质量筛选与保留决策。</p>
+    <div class="operator-group__chips">
+      <a class="operator-chip" href="01-算子定义/A9-标注生成算子/"><span>A9</span>标注生成</a>
+      <a class="operator-chip" href="01-算子定义/A10-候选选择与质量裁决算子/"><span>A10</span>质量裁决</a>
+    </div>
+  </section>
 </div>
 
 ## 建议阅读顺序
