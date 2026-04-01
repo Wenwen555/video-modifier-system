@@ -131,6 +131,36 @@
   box-shadow: var(--operator-shadow-soft);
 }
 
+.card-title-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.card-title-with-icon .twemoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--operator-accent);
+  flex-shrink: 0;
+}
+
+.card-title-with-icon .twemoji svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: currentColor;
+}
+
+.card-title-with-icon strong {
+  font-weight: 800;
+}
+
 .operator-chip-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
