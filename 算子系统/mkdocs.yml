@@ -2,6 +2,8 @@ site_name: Video Operator System
 site_description: Documentation for the video operator system.
 docs_dir: docs
 site_dir: ../.site
+exclude_docs: |
+  99-归档/gpt总结.md
 
 theme:
   name: material
@@ -75,5 +77,3 @@ nav:
   - 文献支撑:
       - 算子-论文映射: 03-文献支撑/算子-论文映射.md
       - 文献支撑与最新趋势总结: 03-文献支撑/文献支撑与最新趋势总结.md
-  - 归档:
-      - GPT 总结: 99-归档/gpt总结.md
