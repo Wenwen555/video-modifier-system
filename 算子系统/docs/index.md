@@ -35,39 +35,43 @@ hide:
 
 ## 主要入口
 
-<div class="grid cards" markdown>
+<div class="entry-grid">
+  <section class="entry-card">
+    <div class="entry-card__header">
+      <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4c0 1.11.45 2.11 1.17 2.83L12 22l2.83-7.17A4 4 0 0 0 16 12a4 4 0 0 0-4-4m0 2a2 2 0 0 1 2 2c0 .55-.22 1.05-.59 1.41L12 17l-1.41-3.59A1.99 1.99 0 0 1 10 12a2 2 0 0 1 2-2m8-7l-8.59 3.44L4 4l2.57 7.41L3 20l8.59-3.44L20 20l-3.44-8.59z"/></svg></span><strong>系统总览</strong></span>
+    </div>
+    <p class="entry-card__desc">先理解系统目标、结构分层与统一协议。</p>
+    <div class="entry-card__links">
+      <a href="00-总览/高自由度视频算子系统总览.md">高自由度视频算子系统总览</a>
+      <a href="00-总览/Architecture.md">Architecture</a>
+      <a href="00-总览/统一中间态与数据流协议.md">统一中间态与数据流协议</a>
+    </div>
+  </section>
 
-- <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4c0 1.11.45 2.11 1.17 2.83L12 22l2.83-7.17A4 4 0 0 0 16 12a4 4 0 0 0-4-4m0 2a2 2 0 0 1 2 2c0 .55-.22 1.05-.59 1.41L12 17l-1.41-3.59A1.99 1.99 0 0 1 10 12a2 2 0 0 1 2-2m8-7l-8.59 3.44L4 4l2.57 7.41L3 20l8.59-3.44L20 20l-3.44-8.59z"/></svg></span><strong>系统总览</strong></span>
+  <section class="entry-card">
+    <div class="entry-card__header">
+      <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zm0-12v2h10V5zm10 16v-2h8v-2h-8v-2l-4 3 4 3zm8-12V7h-2V5h-2v2H9v2h8v2h2V9zm-12 4v2H3v-2z"/></svg></span><strong>算子定义</strong></span>
+    </div>
+    <p class="entry-card__desc">查看 A1 到 A10 的接口、实现边界和技术文档。</p>
+    <div class="entry-card__links">
+      <a href="01-算子定义/A1-划分算子.md">A1-划分算子</a>
+      <a href="01-算子定义/A3-采样算子.md">A3-采样算子</a>
+      <a href="01-算子定义/A4-自适应采样算子.md">A4-自适应采样算子</a>
+      <a href="01-算子定义/A2-片段清洗算子.md">其余算子见左侧导航</a>
+    </div>
+  </section>
 
-  ---
-
-  先理解系统目标、结构分层与统一协议。
-
-  - [高自由度视频算子系统总览](00-总览/高自由度视频算子系统总览.md)
-  - [Architecture](00-总览/Architecture.md)
-  - [统一中间态与数据流协议](00-总览/统一中间态与数据流协议.md)
-
-- <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zm0-12v2h10V5zm10 16v-2h8v-2h-8v-2l-4 3 4 3zm8-12V7h-2V5h-2v2H9v2h8v2h2V9zm-12 4v2H3v-2z"/></svg></span><strong>算子定义</strong></span>
-
-  ---
-
-  查看 A1 到 A10 的接口、实现边界和技术文档。
-
-  - [A1-划分算子](01-算子定义/A1-划分算子.md)
-  - [A3-采样算子](01-算子定义/A3-采样算子.md)
-  - [A4-自适应采样算子](01-算子定义/A4-自适应采样算子.md)
-  - [其余算子见左侧导航](01-算子定义/A2-片段清洗算子.md)
-
-- <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 4H3c-1.1 0-2 .9-2 2v13a1 1 0 0 0 1.5.86C4.74 18.59 6.78 18 9 18c2.28 0 4.42.61 6.72 1.89.17.07.36.11.55.11H21c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 14h-4.18C14.37 16.75 11.9 16 9 16c-2.45 0-4.66.54-6 1.38V6h18zM9 7c-1.11 0-2.16.12-3.15.35l.46 1.66C7.17 8.79 8.07 8.68 9 8.68c2.03 0 3.94.52 5.68 1.56l.82-1.47C13.5 7.59 11.3 7 9 7m0 3c-.88 0-1.72.09-2.53.26l.46 1.67c.66-.15 1.36-.23 2.07-.23 1.56 0 3.03.4 4.38 1.19l.82-1.47C12.61 10.47 10.84 10 9 10m0 3c-.65 0-1.29.06-1.9.18l.46 1.67c.46-.1.95-.15 1.44-.15 1.09 0 2.11.28 3.06.84l.82-1.47A7.98 7.98 0 0 0 9 13"/></svg></span><strong>预设与文献</strong></span>
-
-  ---
-
-  查看经典工作对照、算子映射与近期文献趋势。
-
-  - [预设管线与文献对照](02-预设管线/预设管线与文献对照.md)
-  - [算子-论文映射](03-文献支撑/算子-论文映射.md)
-  - [文献支撑与最新趋势总结](03-文献支撑/文献支撑与最新趋势总结.md)
-
+  <section class="entry-card">
+    <div class="entry-card__header">
+      <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 4H3c-1.1 0-2 .9-2 2v13a1 1 0 0 0 1.5.86C4.74 18.59 6.78 18 9 18c2.28 0 4.42.61 6.72 1.89.17.07.36.11.55.11H21c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 14h-4.18C14.37 16.75 11.9 16 9 16c-2.45 0-4.66.54-6 1.38V6h18zM9 7c-1.11 0-2.16.12-3.15.35l.46 1.66C7.17 8.79 8.07 8.68 9 8.68c2.03 0 3.94.52 5.68 1.56l.82-1.47C13.5 7.59 11.3 7 9 7m0 3c-.88 0-1.72.09-2.53.26l.46 1.67c.66-.15 1.36-.23 2.07-.23 1.56 0 3.03.4 4.38 1.19l.82-1.47C12.61 10.47 10.84 10 9 10m0 3c-.65 0-1.29.06-1.9.18l.46 1.67c.46-.1.95-.15 1.44-.15 1.09 0 2.11.28 3.06.84l.82-1.47A7.98 7.98 0 0 0 9 13"/></svg></span><strong>预设与文献</strong></span>
+    </div>
+    <p class="entry-card__desc">查看经典工作对照、算子映射与近期文献趋势。</p>
+    <div class="entry-card__links">
+      <a href="02-预设管线/预设管线与文献对照.md">预设管线与文献对照</a>
+      <a href="03-文献支撑/算子-论文映射.md">算子-论文映射</a>
+      <a href="03-文献支撑/文献支撑与最新趋势总结.md">文献支撑与最新趋势总结</a>
+    </div>
+  </section>
 </div>
 
 ## 算子索引
