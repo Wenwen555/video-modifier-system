@@ -4,12 +4,12 @@
 
 ## System Overview
 
-当前版本的系统围绕 10 个视频算子展开。它不是一组互不相关的工具集合，而是一条受统一中间态约束的数据处理链路。
+当前版本的系统围绕 10 个视频算子展开。它不是一组互不相关的工具集合，而是一条受统一中间态约束且具有上下游关系的数据处理链路。
 
 系统目标有三点：
 
 - 为视频增强和标注构建提供稳定入口
-- 在不同预算下复用同一套数据流
+- 在不同需求下复用同一套数据流
 - 让最终标注能够回溯到明确证据
 
 ## Layered Architecture
@@ -27,7 +27,7 @@
 | A5 Deduplication | 压缩冗余样本 |
 | A6 Text Extraction | 汇聚 OCR、字幕和 ASR 文本证据 |
 
-### Literature-driven layer
+### Data-Augmentation layer
 该层负责提供近期文献更强调的高价值能力。
 
 | Operator | Responsibility |
@@ -86,25 +86,9 @@ video
 
 这三条分支最终在 `A9` 汇合。
 
-## Intermediate Representation
 
-所有算子共享统一的 `VideoPacket`。顶层结构如下：
 
-```json
-{
-  "video": {},
-  "trace": {},
-  "segments": [],
-  "samples": [],
-  "text_signals": [],
-  "regions": [],
-  "temporal_events": [],
-  "annotations": [],
-  "quality": []
-}
-```
-
-设计原则：
+## 设计原则：
 
 1. 算子只追加结果，不覆盖上游原始对象
 2. 下游只通过对象引用消费上游产物
@@ -134,51 +118,9 @@ video_id
 
 ## Preset Architecture
 
-### Lite
+我们采用经典文献工作的主链路作为预设，具体请参考[预设管线与文献对照](02-预设管线/预设管线与文献对照.md)
 
-```text
-A1 -> A2 -> A3 -> A6 -> A9 -> A10
-```
 
-适合：
-
-- 快速打底
-- 短视频批处理
-- 低算力环境
-
-### Balanced
-
-```text
-A1 -> A2 -> A3 + A4 -> A5 -> A6 + A7 + A8 -> A9 -> A10
-```
-
-适合：
-
-- 通用网页混合视频
-- 默认系统入口
-- 对外展示时的主方案
-
-### Heavy
-
-```text
-A1 -> A2(strict) -> A4 -> A5 -> A6 + A7 + A8 -> A9 -> A10(strict)
-```
-
-适合：
-
-- 长视频
-- 高价值样本构建
-- 时间和空间对齐要求高的链路
-
-## Recommended Reading Path
-
-建议按下面顺序阅读：
-
-1. [高自由度视频算子系统总览](高自由度视频算子系统总览.md)
-2. [Architecture](Architecture.md)
-3. [统一中间态与数据流协议](统一中间态与数据流协议.md)
-4. A1、A3、A4、A9、A10
-5. 其余算子与文献映射
 
 ## Scope
 

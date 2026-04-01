@@ -6,21 +6,30 @@ site_dir: ../.site
 theme:
   name: material
   language: zh
+  font:
+    text: Noto Sans SC
+    code: JetBrains Mono
   features:
     - navigation.instant
+    - navigation.tabs
     - navigation.sections
+    - navigation.tracking
     - navigation.top
     - navigation.indexes
+    - toc.follow
     - search.suggest
     - search.highlight
     - content.code.copy
   palette:
     - scheme: default
       primary: blue grey
-      accent: indigo
+      accent: teal
 
 plugins:
   - search
+
+extra_css:
+  - assets/stylesheets/extra.css
 
 markdown_extensions:
   - admonition
