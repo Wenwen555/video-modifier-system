@@ -1,6 +1,10 @@
 import { App, Component, MarkdownRenderer } from "obsidian";
 import { assetExportHref } from "./document";
-import { type PrettyHeading, type PrettyReaderDocument } from "./types";
+import {
+  type PrettyHeading,
+  type PrettyReaderDocument,
+  supportsColumnMode,
+} from "./types";
 
 type RenderMode = "view" | "export";
 
@@ -22,6 +26,7 @@ export async function renderPrettyReaderDocument(
     cls: [
       "pretty-reader",
       `pretty-reader--${prettyDocument.layout}`,
+      `pretty-reader-columns--${prettyDocument.columnMode}`,
       `pretty-reader-theme--${prettyDocument.theme}`,
     ].join(" "),
   });
@@ -120,7 +125,13 @@ function renderHeader(
     prettyDocument.wordCount.toLocaleString("zh-CN"),
   );
   renderSummaryItem(summaryBar, "Theme", prettyDocument.theme);
-  renderSummaryItem(summaryBar, "File", prettyDocument.file.basename);
+  renderSummaryItem(
+    summaryBar,
+    supportsColumnMode(prettyDocument.layout) ? "Columns" : "Layout",
+    supportsColumnMode(prettyDocument.layout)
+      ? prettyDocument.columnMode
+      : prettyDocument.layout,
+  );
 }
 
 async function renderCards(

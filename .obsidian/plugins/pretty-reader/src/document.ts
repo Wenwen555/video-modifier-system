@@ -1,8 +1,10 @@
 import { App, TFile, normalizePath } from "obsidian";
 import {
+  COLUMN_MODE_OPTIONS,
   LAYOUT_OPTIONS,
   THEME_OPTIONS,
   type PrettyCardSection,
+  type PrettyColumnMode,
   type PrettyHeading,
   type PrettyLayout,
   type PrettyReaderDocument,
@@ -10,6 +12,7 @@ import {
   type PrettyResolvedResource,
   type PrettyResourceKind,
   type PrettyTheme,
+  supportsColumnMode,
 } from "./types";
 
 const IMAGE_EXTENSIONS = new Set([
@@ -50,7 +53,12 @@ export async function buildPrettyReaderDocument(
   const subtitle = readString(frontmatter.subtitle);
   const author = readString(frontmatter.author);
   const layout = parseLayout(frontmatter.pretty, settings.defaultLayout);
-  const theme = parseTheme(frontmatter.theme, settings.defaultTheme);
+  const notePreference = settings.notePreferences[file.path] ?? {};
+  const theme = parseTheme(
+    notePreference.theme ?? frontmatter.theme,
+    settings.defaultTheme,
+  );
+  const columnMode = parseColumnMode(notePreference.columnMode, layout);
   const toc = parseBoolean(frontmatter.toc, false);
   const coverReference = readString(frontmatter.cover);
   const cover = coverReference
@@ -79,6 +87,7 @@ export async function buildPrettyReaderDocument(
     author: author ?? undefined,
     layout,
     theme,
+    columnMode,
     toc,
     wordCount,
     readingMinutes,
@@ -259,6 +268,19 @@ function parseTheme(value: unknown, fallback: PrettyTheme): PrettyTheme {
   return THEME_OPTIONS.includes(value as PrettyTheme)
     ? (value as PrettyTheme)
     : fallback;
+}
+
+function parseColumnMode(
+  value: unknown,
+  layout: PrettyLayout,
+): PrettyColumnMode {
+  if (!supportsColumnMode(layout)) {
+    return "single";
+  }
+
+  return COLUMN_MODE_OPTIONS.includes(value as PrettyColumnMode)
+    ? (value as PrettyColumnMode)
+    : "single";
 }
 
 function parseBoolean(value: unknown, fallback: boolean): boolean {
@@ -607,8 +629,9 @@ function estimateReadableUnits(markdown: string): number {
     .trim();
 
   const hanCount = (stripped.match(/[\p{Script=Han}]/gu) ?? []).length;
-  const latinWordCount = (stripped.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? [])
-    .length;
+  const latinWordCount = (
+    stripped.match(/[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*/g) ?? []
+  ).length;
 
   return Math.max(1, hanCount + latinWordCount);
 }

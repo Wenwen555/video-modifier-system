@@ -42,11 +42,16 @@ var THEME_OPTIONS = [
   "graphite",
   "clean-sky"
 ];
+var COLUMN_MODE_OPTIONS = ["single", "double"];
 var DEFAULT_SETTINGS = {
   defaultLayout: "article",
   defaultTheme: "warm-paper",
-  exportDirectory: "exports/pretty-reader"
+  exportDirectory: "exports/pretty-reader",
+  notePreferences: {}
 };
+function supportsColumnMode(layout) {
+  return layout === "article" || layout === "paper";
+}
 
 // src/document.ts
 var IMAGE_EXTENSIONS = /* @__PURE__ */ new Set([
@@ -72,7 +77,12 @@ async function buildPrettyReaderDocument(app, file, settings) {
   const subtitle = readString(frontmatter.subtitle);
   const author = readString(frontmatter.author);
   const layout = parseLayout(frontmatter.pretty, settings.defaultLayout);
-  const theme = parseTheme(frontmatter.theme, settings.defaultTheme);
+  const notePreference = settings.notePreferences[file.path] ?? {};
+  const theme = parseTheme(
+    notePreference.theme ?? frontmatter.theme,
+    settings.defaultTheme
+  );
+  const columnMode = parseColumnMode(notePreference.columnMode, layout);
   const toc = parseBoolean(frontmatter.toc, false);
   const coverReference = readString(frontmatter.cover);
   const cover = coverReference ? resolveResourceReference(app, file, coverReference, "cover") ?? void 0 : void 0;
@@ -97,6 +107,7 @@ async function buildPrettyReaderDocument(app, file, settings) {
     author: author ?? void 0,
     layout,
     theme,
+    columnMode,
     toc,
     wordCount,
     readingMinutes,
@@ -227,6 +238,12 @@ function parseLayout(value, fallback) {
 }
 function parseTheme(value, fallback) {
   return THEME_OPTIONS.includes(value) ? value : fallback;
+}
+function parseColumnMode(value, layout) {
+  if (!supportsColumnMode(layout)) {
+    return "single";
+  }
+  return COLUMN_MODE_OPTIONS.includes(value) ? value : "single";
 }
 function parseBoolean(value, fallback) {
   if (typeof value === "boolean") {
@@ -476,7 +493,7 @@ function toAsciiSlug(value) {
 function estimateReadableUnits(markdown) {
   const stripped = markdown.replace(/```[\s\S]*?```/g, " ").replace(/`[^`]+`/g, " ").replace(/!\[[^\]]*\]\([^)]+\)/g, " ").replace(/!\[\[[^\]]+\]\]/g, " ").replace(/\[\[([^\]]+)\]\]/g, " $1 ").replace(/\[[^\]]+\]\([^)]+\)/g, " ").replace(/[#>*_\-\n\r]/g, " ").trim();
   const hanCount = (stripped.match(/[\p{Script=Han}]/gu) ?? []).length;
-  const latinWordCount = (stripped.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? []).length;
+  const latinWordCount = (stripped.match(/[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*/g) ?? []).length;
   return Math.max(1, hanCount + latinWordCount);
 }
 function formatUpdatedAt(timestamp) {
@@ -499,6 +516,7 @@ async function renderPrettyReaderDocument(options) {
     cls: [
       "pretty-reader",
       `pretty-reader--${prettyDocument.layout}`,
+      `pretty-reader-columns--${prettyDocument.columnMode}`,
       `pretty-reader-theme--${prettyDocument.theme}`
     ].join(" ")
   });
@@ -574,7 +592,11 @@ function renderHeader(app, containerEl, prettyDocument, mode) {
     prettyDocument.wordCount.toLocaleString("zh-CN")
   );
   renderSummaryItem(summaryBar, "Theme", prettyDocument.theme);
-  renderSummaryItem(summaryBar, "File", prettyDocument.file.basename);
+  renderSummaryItem(
+    summaryBar,
+    supportsColumnMode(prettyDocument.layout) ? "Columns" : "Layout",
+    supportsColumnMode(prettyDocument.layout) ? prettyDocument.columnMode : prettyDocument.layout
+  );
 }
 async function renderCards(app, containerEl, component, prettyDocument, mode) {
   const cardsGrid = containerEl.createDiv({ cls: "pretty-reader-cards-grid" });
@@ -811,7 +833,7 @@ var PrettyReaderView = class extends import_obsidian4.ItemView {
     }
     const abstractFile = this.app.vault.getAbstractFileByPath(this.state.file);
     if (abstractFile instanceof import_obsidian4.TFile) {
-      return `${abstractFile.basename} \xB7 Pretty Reader`;
+      return `${abstractFile.basename} | Pretty Reader`;
     }
     return "Pretty Reader";
   }
@@ -830,6 +852,10 @@ var PrettyReaderView = class extends import_obsidian4.ItemView {
   }
   async onOpen() {
     this.contentEl.addClass("pretty-reader-view");
+    this.contentEl.setAttribute("tabindex", "0");
+    this.registerDomEvent(this.contentEl, "contextmenu", (event) => {
+      this.handleContextMenu(event);
+    });
     this.registerEvent(
       this.app.vault.on("modify", (file) => {
         if (file instanceof import_obsidian4.TFile && file.path === this.state.file) {
@@ -870,6 +896,7 @@ var PrettyReaderView = class extends import_obsidian4.ItemView {
       abstractFile,
       this.plugin.settings
     );
+    this.currentDocument = prettyDocument;
     await renderPrettyReaderDocument({
       app: this.app,
       component: this,
@@ -880,11 +907,119 @@ var PrettyReaderView = class extends import_obsidian4.ItemView {
   }
   async renderEmpty(message) {
     this.contentEl.empty();
+    this.currentDocument = void 0;
     const emptyState = this.contentEl.createDiv({
       cls: "pretty-reader-empty-state"
     });
     emptyState.createEl("h2", { text: "Pretty Reader" });
     emptyState.createEl("p", { text: message });
+  }
+  handleContextMenu(event) {
+    if (!this.currentDocument) {
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof Node) || !this.contentEl.contains(target)) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const menu = new import_obsidian4.Menu();
+    const selectedText = this.getSelectedText();
+    const notePreference = this.plugin.getNotePreference(this.currentDocument.filePath);
+    menu.addItem((item) => {
+      item.setTitle("Copy selected text").setIcon("copy").setDisabled(selectedText.length === 0).onClick(() => {
+        void this.copyText(selectedText);
+      });
+    });
+    menu.addSeparator();
+    menu.addItem((item) => {
+      item.setTitle("Theme").setIsLabel(true);
+    });
+    for (const theme of THEME_OPTIONS) {
+      menu.addItem((item) => {
+        item.setTitle(theme).setChecked(this.currentDocument?.theme === theme).onClick(() => {
+          void this.plugin.setNoteTheme(this.currentDocument.filePath, theme);
+        });
+      });
+    }
+    menu.addItem((item) => {
+      item.setTitle("Reset theme").setIcon("rotate-ccw").setDisabled(!notePreference.theme).onClick(() => {
+        void this.plugin.resetNoteTheme(this.currentDocument.filePath);
+      });
+    });
+    menu.addSeparator();
+    menu.addItem((item) => {
+      item.setTitle("Column mode").setIsLabel(true);
+    });
+    if (!supportsColumnMode(this.currentDocument.layout)) {
+      menu.addItem((item) => {
+        item.setTitle("Dual column unavailable for cards").setDisabled(true);
+      });
+    } else {
+      for (const columnMode of COLUMN_MODE_OPTIONS) {
+        menu.addItem((item) => {
+          item.setTitle(
+            columnMode === "single" ? "Single column" : "Dual column"
+          ).setChecked(this.currentDocument?.columnMode === columnMode).onClick(() => {
+            void this.plugin.setNoteColumnMode(
+              this.currentDocument.filePath,
+              columnMode
+            );
+          });
+        });
+      }
+    }
+    menu.showAtMouseEvent(event);
+  }
+  getSelectedText() {
+    const selection = this.contentEl.ownerDocument.getSelection();
+    if (!selection || selection.isCollapsed) {
+      return "";
+    }
+    const anchorNode = selection.anchorNode;
+    const focusNode = selection.focusNode;
+    if (!anchorNode || !focusNode) {
+      return "";
+    }
+    if (!this.contentEl.contains(anchorNode) || !this.contentEl.contains(focusNode)) {
+      return "";
+    }
+    return selection.toString().trim();
+  }
+  async copyText(text) {
+    if (!text) {
+      return;
+    }
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else if (!this.fallbackCopyText(text)) {
+        throw new Error("Clipboard API unavailable");
+      }
+      new import_obsidian4.Notice("Selected text copied.");
+    } catch {
+      if (this.fallbackCopyText(text)) {
+        new import_obsidian4.Notice("Selected text copied.");
+      } else {
+        new import_obsidian4.Notice("Unable to copy selected text.");
+      }
+    }
+  }
+  fallbackCopyText(text) {
+    const doc = this.contentEl.ownerDocument;
+    const textarea = doc.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "true");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    doc.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+    const copied = doc.execCommand("copy");
+    textarea.remove();
+    return copied;
   }
 };
 var PrettyReaderPlugin = class extends import_obsidian4.Plugin {
@@ -894,6 +1029,20 @@ var PrettyReaderPlugin = class extends import_obsidian4.Plugin {
   }
   async onload() {
     await this.loadSettings();
+    this.registerEvent(
+      this.app.vault.on("rename", (file, oldPath) => {
+        if (file instanceof import_obsidian4.TFile) {
+          void this.handleFileRename(oldPath, file.path);
+        }
+      })
+    );
+    this.registerEvent(
+      this.app.vault.on("delete", (file) => {
+        if (file instanceof import_obsidian4.TFile) {
+          void this.handleFileDelete(file.path);
+        }
+      })
+    );
     const ribbonIconEl = this.addRibbonIcon(
       "book-open",
       "Open Pretty Reader",
@@ -934,12 +1083,16 @@ var PrettyReaderPlugin = class extends import_obsidian4.Plugin {
       defaultTheme: this.parseThemeValue(loaded?.defaultTheme),
       exportDirectory: normalizeExportDirectory(
         loaded?.exportDirectory ?? DEFAULT_SETTINGS.exportDirectory
-      )
+      ),
+      notePreferences: this.normalizeNotePreferences(loaded?.notePreferences)
     };
   }
   async saveSettings() {
     this.settings.exportDirectory = normalizeExportDirectory(
       this.settings.exportDirectory
+    );
+    this.settings.notePreferences = this.normalizeNotePreferences(
+      this.settings.notePreferences
     );
     await this.saveData(this.settings);
     await this.rerenderPrettyReaderLeaves();
@@ -949,6 +1102,32 @@ var PrettyReaderPlugin = class extends import_obsidian4.Plugin {
   }
   parseThemeValue(value) {
     return THEME_OPTIONS.includes(value) ? value : DEFAULT_SETTINGS.defaultTheme;
+  }
+  normalizeNotePreferences(value) {
+    if (!value || typeof value !== "object") {
+      return {};
+    }
+    const normalized = {};
+    for (const [filePath, preference] of Object.entries(
+      value
+    )) {
+      if (!preference || typeof preference !== "object") {
+        continue;
+      }
+      const nextPreference = {};
+      const rawTheme = preference.theme;
+      const rawColumnMode = preference.columnMode;
+      if (THEME_OPTIONS.includes(rawTheme)) {
+        nextPreference.theme = rawTheme;
+      }
+      if (COLUMN_MODE_OPTIONS.includes(rawColumnMode)) {
+        nextPreference.columnMode = rawColumnMode;
+      }
+      if (nextPreference.theme || nextPreference.columnMode) {
+        normalized[filePath] = nextPreference;
+      }
+    }
+    return normalized;
   }
   getActiveMarkdownFile() {
     const file = this.app.workspace.getActiveFile();
@@ -986,6 +1165,57 @@ var PrettyReaderPlugin = class extends import_obsidian4.Plugin {
       }
     }
     return null;
+  }
+  getNotePreference(filePath) {
+    return this.settings.notePreferences[filePath] ?? {};
+  }
+  async setNoteTheme(filePath, theme) {
+    const nextPreference = {
+      ...this.getNotePreference(filePath),
+      theme
+    };
+    await this.setNotePreference(filePath, nextPreference);
+  }
+  async resetNoteTheme(filePath) {
+    const nextPreference = {
+      ...this.getNotePreference(filePath)
+    };
+    delete nextPreference.theme;
+    await this.setNotePreference(filePath, nextPreference);
+  }
+  async setNoteColumnMode(filePath, columnMode) {
+    const nextPreference = {
+      ...this.getNotePreference(filePath),
+      columnMode
+    };
+    await this.setNotePreference(filePath, nextPreference);
+  }
+  async setNotePreference(filePath, preference) {
+    if (preference.theme || preference.columnMode) {
+      this.settings.notePreferences[filePath] = preference;
+    } else {
+      delete this.settings.notePreferences[filePath];
+    }
+    await this.saveSettings();
+  }
+  async handleFileRename(oldPath, newPath) {
+    if (oldPath === newPath) {
+      return;
+    }
+    const existingPreference = this.settings.notePreferences[oldPath];
+    if (!existingPreference) {
+      return;
+    }
+    delete this.settings.notePreferences[oldPath];
+    this.settings.notePreferences[newPath] = existingPreference;
+    await this.saveSettings();
+  }
+  async handleFileDelete(filePath) {
+    if (!this.settings.notePreferences[filePath]) {
+      return;
+    }
+    delete this.settings.notePreferences[filePath];
+    await this.saveSettings();
   }
   async exportActiveNote() {
     const file = this.getActiveMarkdownFile();

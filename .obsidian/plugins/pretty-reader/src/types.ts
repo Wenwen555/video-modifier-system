@@ -12,16 +12,26 @@ export const THEME_OPTIONS = [
 ] as const;
 export type PrettyTheme = (typeof THEME_OPTIONS)[number];
 
+export const COLUMN_MODE_OPTIONS = ["single", "double"] as const;
+export type PrettyColumnMode = (typeof COLUMN_MODE_OPTIONS)[number];
+
+export interface PrettyNotePreference {
+  theme?: PrettyTheme;
+  columnMode?: PrettyColumnMode;
+}
+
 export interface PrettyReaderSettings {
   defaultLayout: PrettyLayout;
   defaultTheme: PrettyTheme;
   exportDirectory: string;
+  notePreferences: Record<string, PrettyNotePreference>;
 }
 
 export const DEFAULT_SETTINGS: PrettyReaderSettings = {
   defaultLayout: "article",
   defaultTheme: "warm-paper",
   exportDirectory: "exports/pretty-reader",
+  notePreferences: {},
 };
 
 export interface PrettyReaderViewState extends Record<string, unknown> {
@@ -58,6 +68,7 @@ export interface PrettyReaderDocument {
   author?: string;
   layout: PrettyLayout;
   theme: PrettyTheme;
+  columnMode: PrettyColumnMode;
   toc: boolean;
   wordCount: number;
   readingMinutes: number;
@@ -70,4 +81,8 @@ export interface PrettyReaderDocument {
   exportCards: PrettyCardSection[];
   cover?: PrettyResolvedResource;
   resources: PrettyResolvedResource[];
+}
+
+export function supportsColumnMode(layout: PrettyLayout): boolean {
+  return layout === "article" || layout === "paper";
 }

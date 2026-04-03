@@ -1,6 +1,7 @@
 import {
   App,
   ItemView,
+  Menu,
   Notice,
   Plugin,
   PluginSettingTab,
@@ -17,19 +18,25 @@ import {
 import { exportPrettyReaderHtml } from "./src/exporter";
 import { renderPrettyReaderDocument } from "./src/render";
 import {
+  COLUMN_MODE_OPTIONS,
   DEFAULT_SETTINGS,
   LAYOUT_OPTIONS,
   PRETTY_READER_VIEW_TYPE,
   THEME_OPTIONS,
+  type PrettyColumnMode,
   type PrettyLayout,
+  type PrettyNotePreference,
+  type PrettyReaderDocument,
   type PrettyReaderSettings,
   type PrettyReaderViewState,
   type PrettyTheme,
+  supportsColumnMode,
 } from "./src/types";
 
 class PrettyReaderView extends ItemView {
   plugin: PrettyReaderPlugin;
   private state: PrettyReaderViewState = {};
+  private currentDocument?: PrettyReaderDocument;
 
   constructor(leaf: WorkspaceLeaf, plugin: PrettyReaderPlugin) {
     super(leaf);
@@ -48,7 +55,7 @@ class PrettyReaderView extends ItemView {
 
     const abstractFile = this.app.vault.getAbstractFileByPath(this.state.file);
     if (abstractFile instanceof TFile) {
-      return `${abstractFile.basename} · Pretty Reader`;
+      return `${abstractFile.basename} | Pretty Reader`;
     }
 
     return "Pretty Reader";
@@ -75,6 +82,10 @@ class PrettyReaderView extends ItemView {
 
   async onOpen(): Promise<void> {
     this.contentEl.addClass("pretty-reader-view");
+    this.contentEl.setAttribute("tabindex", "0");
+    this.registerDomEvent(this.contentEl, "contextmenu", (event) => {
+      this.handleContextMenu(event);
+    });
     this.registerEvent(
       this.app.vault.on("modify", (file) => {
         if (file instanceof TFile && file.path === this.state.file) {
@@ -118,6 +129,7 @@ class PrettyReaderView extends ItemView {
       abstractFile,
       this.plugin.settings,
     );
+    this.currentDocument = prettyDocument;
 
     await renderPrettyReaderDocument({
       app: this.app,
@@ -130,11 +142,151 @@ class PrettyReaderView extends ItemView {
 
   async renderEmpty(message: string): Promise<void> {
     this.contentEl.empty();
+    this.currentDocument = undefined;
     const emptyState = this.contentEl.createDiv({
       cls: "pretty-reader-empty-state",
     });
     emptyState.createEl("h2", { text: "Pretty Reader" });
     emptyState.createEl("p", { text: message });
+  }
+
+  private handleContextMenu(event: MouseEvent): void {
+    if (!this.currentDocument) {
+      return;
+    }
+
+    const target = event.target;
+    if (!(target instanceof Node) || !this.contentEl.contains(target)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const menu = new Menu();
+    const selectedText = this.getSelectedText();
+    const notePreference = this.plugin.getNotePreference(this.currentDocument.filePath);
+
+    menu.addItem((item) => {
+      item
+        .setTitle("Copy selected text")
+        .setIcon("copy")
+        .setDisabled(selectedText.length === 0)
+        .onClick(() => {
+          void this.copyText(selectedText);
+        });
+    });
+
+    menu.addSeparator();
+    menu.addItem((item) => {
+      item.setTitle("Theme").setIsLabel(true);
+    });
+
+    for (const theme of THEME_OPTIONS) {
+      menu.addItem((item) => {
+        item
+          .setTitle(theme)
+          .setChecked(this.currentDocument?.theme === theme)
+          .onClick(() => {
+            void this.plugin.setNoteTheme(this.currentDocument!.filePath, theme);
+          });
+      });
+    }
+
+    menu.addItem((item) => {
+      item
+        .setTitle("Reset theme")
+        .setIcon("rotate-ccw")
+        .setDisabled(!notePreference.theme)
+        .onClick(() => {
+          void this.plugin.resetNoteTheme(this.currentDocument!.filePath);
+        });
+    });
+
+    menu.addSeparator();
+    menu.addItem((item) => {
+      item.setTitle("Column mode").setIsLabel(true);
+    });
+
+    if (!supportsColumnMode(this.currentDocument.layout)) {
+      menu.addItem((item) => {
+        item.setTitle("Dual column unavailable for cards").setDisabled(true);
+      });
+    } else {
+      for (const columnMode of COLUMN_MODE_OPTIONS) {
+        menu.addItem((item) => {
+          item
+            .setTitle(
+              columnMode === "single" ? "Single column" : "Dual column",
+            )
+            .setChecked(this.currentDocument?.columnMode === columnMode)
+            .onClick(() => {
+              void this.plugin.setNoteColumnMode(
+                this.currentDocument!.filePath,
+                columnMode,
+              );
+            });
+        });
+      }
+    }
+
+    menu.showAtMouseEvent(event);
+  }
+
+  private getSelectedText(): string {
+    const selection = this.contentEl.ownerDocument.getSelection();
+    if (!selection || selection.isCollapsed) {
+      return "";
+    }
+
+    const anchorNode = selection.anchorNode;
+    const focusNode = selection.focusNode;
+    if (!anchorNode || !focusNode) {
+      return "";
+    }
+
+    if (!this.contentEl.contains(anchorNode) || !this.contentEl.contains(focusNode)) {
+      return "";
+    }
+
+    return selection.toString().trim();
+  }
+
+  private async copyText(text: string): Promise<void> {
+    if (!text) {
+      return;
+    }
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else if (!this.fallbackCopyText(text)) {
+        throw new Error("Clipboard API unavailable");
+      }
+      new Notice("Selected text copied.");
+    } catch {
+      if (this.fallbackCopyText(text)) {
+        new Notice("Selected text copied.");
+      } else {
+        new Notice("Unable to copy selected text.");
+      }
+    }
+  }
+
+  private fallbackCopyText(text: string): boolean {
+    const doc = this.contentEl.ownerDocument;
+    const textarea = doc.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "true");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    doc.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+    const copied = doc.execCommand("copy");
+    textarea.remove();
+    return copied;
   }
 }
 
@@ -143,6 +295,21 @@ export default class PrettyReaderPlugin extends Plugin {
 
   async onload(): Promise<void> {
     await this.loadSettings();
+
+    this.registerEvent(
+      this.app.vault.on("rename", (file, oldPath) => {
+        if (file instanceof TFile) {
+          void this.handleFileRename(oldPath, file.path);
+        }
+      }),
+    );
+    this.registerEvent(
+      this.app.vault.on("delete", (file) => {
+        if (file instanceof TFile) {
+          void this.handleFileDelete(file.path);
+        }
+      }),
+    );
 
     const ribbonIconEl = this.addRibbonIcon(
       "book-open",
@@ -191,12 +358,16 @@ export default class PrettyReaderPlugin extends Plugin {
       exportDirectory: normalizeExportDirectory(
         loaded?.exportDirectory ?? DEFAULT_SETTINGS.exportDirectory,
       ),
+      notePreferences: this.normalizeNotePreferences(loaded?.notePreferences),
     };
   }
 
   async saveSettings(): Promise<void> {
     this.settings.exportDirectory = normalizeExportDirectory(
       this.settings.exportDirectory,
+    );
+    this.settings.notePreferences = this.normalizeNotePreferences(
+      this.settings.notePreferences,
     );
     await this.saveData(this.settings);
     await this.rerenderPrettyReaderLeaves();
@@ -212,6 +383,41 @@ export default class PrettyReaderPlugin extends Plugin {
     return THEME_OPTIONS.includes(value as PrettyTheme)
       ? (value as PrettyTheme)
       : DEFAULT_SETTINGS.defaultTheme;
+  }
+
+  private normalizeNotePreferences(
+    value: unknown,
+  ): Record<string, PrettyNotePreference> {
+    if (!value || typeof value !== "object") {
+      return {};
+    }
+
+    const normalized: Record<string, PrettyNotePreference> = {};
+    for (const [filePath, preference] of Object.entries(
+      value as Record<string, unknown>,
+    )) {
+      if (!preference || typeof preference !== "object") {
+        continue;
+      }
+
+      const nextPreference: PrettyNotePreference = {};
+      const rawTheme = (preference as Record<string, unknown>).theme;
+      const rawColumnMode = (preference as Record<string, unknown>).columnMode;
+
+      if (THEME_OPTIONS.includes(rawTheme as PrettyTheme)) {
+        nextPreference.theme = rawTheme as PrettyTheme;
+      }
+
+      if (COLUMN_MODE_OPTIONS.includes(rawColumnMode as PrettyColumnMode)) {
+        nextPreference.columnMode = rawColumnMode as PrettyColumnMode;
+      }
+
+      if (nextPreference.theme || nextPreference.columnMode) {
+        normalized[filePath] = nextPreference;
+      }
+    }
+
+    return normalized;
   }
 
   private getActiveMarkdownFile(): TFile | null {
@@ -257,6 +463,77 @@ export default class PrettyReaderPlugin extends Plugin {
     }
 
     return null;
+  }
+
+  getNotePreference(filePath: string): PrettyNotePreference {
+    return this.settings.notePreferences[filePath] ?? {};
+  }
+
+  async setNoteTheme(filePath: string, theme: PrettyTheme): Promise<void> {
+    const nextPreference = {
+      ...this.getNotePreference(filePath),
+      theme,
+    };
+    await this.setNotePreference(filePath, nextPreference);
+  }
+
+  async resetNoteTheme(filePath: string): Promise<void> {
+    const nextPreference = {
+      ...this.getNotePreference(filePath),
+    };
+    delete nextPreference.theme;
+    await this.setNotePreference(filePath, nextPreference);
+  }
+
+  async setNoteColumnMode(
+    filePath: string,
+    columnMode: PrettyColumnMode,
+  ): Promise<void> {
+    const nextPreference = {
+      ...this.getNotePreference(filePath),
+      columnMode,
+    };
+    await this.setNotePreference(filePath, nextPreference);
+  }
+
+  private async setNotePreference(
+    filePath: string,
+    preference: PrettyNotePreference,
+  ): Promise<void> {
+    if (preference.theme || preference.columnMode) {
+      this.settings.notePreferences[filePath] = preference;
+    } else {
+      delete this.settings.notePreferences[filePath];
+    }
+
+    await this.saveSettings();
+  }
+
+  private async handleFileRename(
+    oldPath: string,
+    newPath: string,
+  ): Promise<void> {
+    if (oldPath === newPath) {
+      return;
+    }
+
+    const existingPreference = this.settings.notePreferences[oldPath];
+    if (!existingPreference) {
+      return;
+    }
+
+    delete this.settings.notePreferences[oldPath];
+    this.settings.notePreferences[newPath] = existingPreference;
+    await this.saveSettings();
+  }
+
+  private async handleFileDelete(filePath: string): Promise<void> {
+    if (!this.settings.notePreferences[filePath]) {
+      return;
+    }
+
+    delete this.settings.notePreferences[filePath];
+    await this.saveSettings();
   }
 
   async exportActiveNote(): Promise<void> {
