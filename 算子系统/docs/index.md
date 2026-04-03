@@ -97,14 +97,14 @@ hide:
   <p class="landing-overline">Video Operator System</p>
   <h1>视频算子系统</h1>
   <p class="landing-subtitle">
-    面向视频增强、样本构建与标注生成的高自由度算子系统。当前版本围绕 10 个原子算子组织，
+    面向视频增强、样本构建与标注生成的高自由度算子系统。当前版本围绕 9 个原子算子组织，
     覆盖从片段划分、采样、证据提取到标注生成与质量裁决的完整链路。
   </p>
 </div>
 
 <div class="landing-meta">
   <div class="landing-chip">
-    <strong>10</strong>
+    <strong>9</strong>
     <span>原子算子</span>
   </div>
   <div class="landing-chip">
@@ -142,11 +142,11 @@ hide:
     <div class="entry-card__header">
       <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zm0-12v2h10V5zm10 16v-2h8v-2h-8v-2l-4 3 4 3zm8-12V7h-2V5h-2v2H9v2h8v2h2V9zm-12 4v2H3v-2z"/></svg></span><strong>算子定义</strong></span>
     </div>
-    <p class="entry-card__desc">查看 A1 到 A10 的接口、实现边界和技术文档。</p>
+    <p class="entry-card__desc">查看 A1 到 A9 的接口、实现边界和技术文档。</p>
     <div class="entry-card__links">
       <a href="01-算子定义/A1-划分算子/">A1-划分算子</a>
-      <a href="01-算子定义/A3-采样算子/">A3-采样算子</a>
-      <a href="01-算子定义/A4-自适应采样算子/">A4-自适应采样算子</a>
+      <a href="01-算子定义/A3-采样算子/">A3-采样算子（含自适应）</a>
+      <a href="01-算子定义/A4-去重算子/">A4-去重算子</a>
       <a href="01-算子定义/A2-片段清洗算子/">其余算子见左侧导航</a>
     </div>
   </section>
@@ -170,13 +170,13 @@ hide:
   <section class="operator-group">
     <p class="operator-group__eyebrow">Foundation</p>
     <h3>基础链路</h3>
-    <p class="operator-group__desc">负责建立稳定的片段入口、基础采样、去重压缩和文本证据汇聚。</p>
+    <p class="operator-group__desc">负责建立稳定的片段入口、统一采样、去重压缩和文本证据汇聚。</p>
     <div class="operator-group__chips">
       <a class="operator-chip" href="01-算子定义/A1-划分算子/"><span>A1</span>划分</a>
       <a class="operator-chip" href="01-算子定义/A2-片段清洗算子/"><span>A2</span>片段清洗</a>
       <a class="operator-chip" href="01-算子定义/A3-采样算子/"><span>A3</span>采样</a>
-      <a class="operator-chip" href="01-算子定义/A5-去重算子/"><span>A5</span>去重</a>
-      <a class="operator-chip" href="01-算子定义/A6-文本抽取算子/"><span>A6</span>文本抽取</a>
+      <a class="operator-chip" href="01-算子定义/A4-去重算子/"><span>A4</span>去重</a>
+      <a class="operator-chip" href="01-算子定义/A5-文本抽取算子/"><span>A5</span>文本抽取</a>
     </div>
   </section>
 
@@ -185,9 +185,8 @@ hide:
     <h3>增强链路</h3>
     <p class="operator-group__desc">负责在有限预算内补强时序敏感性、空间证据和变化建模能力。</p>
     <div class="operator-group__chips">
-      <a class="operator-chip" href="01-算子定义/A4-自适应采样算子/"><span>A4</span>自适应采样</a>
-      <a class="operator-chip" href="01-算子定义/A7-空间聚焦算子/"><span>A7</span>空间聚焦</a>
-      <a class="operator-chip" href="01-算子定义/A8-时序定位与变化摘要算子/"><span>A8</span>时序定位与变化摘要</a>
+      <a class="operator-chip" href="01-算子定义/A6-空间聚焦算子/"><span>A6</span>空间聚焦</a>
+      <a class="operator-chip" href="01-算子定义/A7-时序定位与变化摘要算子/"><span>A7</span>时序定位与变化摘要</a>
     </div>
   </section>
 
@@ -196,15 +195,15 @@ hide:
     <h3>生成与裁决</h3>
     <p class="operator-group__desc">负责把多路证据组织成训练标注，并在最终出口做质量筛选与保留决策。</p>
     <div class="operator-group__chips">
-      <a class="operator-chip" href="01-算子定义/A9-标注生成算子/"><span>A9</span>标注生成</a>
-      <a class="operator-chip" href="01-算子定义/A10-候选选择与质量裁决算子/"><span>A10</span>质量裁决</a>
+      <a class="operator-chip" href="01-算子定义/A8-标注生成算子/"><span>A8</span>标注生成</a>
+      <a class="operator-chip" href="01-算子定义/A9-候选选择与质量裁决算子/"><span>A9</span>质量裁决</a>
     </div>
   </section>
 </div>
 
 ## 建议阅读顺序
 
-1. 先读 [高自由度视频算子系统总览](00-总览/高自由度视频算子系统总览.md)，了解系统目标和 10 个算子的整体设计。
+1. 先读 [高自由度视频算子系统总览](00-总览/高自由度视频算子系统总览.md)，了解系统目标和 9 个算子的整体设计。
 2. 再读 [Architecture](00-总览/Architecture.md)，了解系统层次、主数据流和文献驱动的预设架构。
 3. 然后读 [统一中间态与数据流协议](00-总览/统一中间态与数据流协议.md)，确认统一对象结构和数据血缘约束。
 4. 最后按需要进入具体算子页面、预设页面和文献支撑页面。

@@ -22,7 +22,7 @@
             }
           },
           {
-            "id": "cdf50769e306be47",
+            "id": "478660b90c26fed7",
             "type": "leaf",
             "state": {
               "type": "pretty-reader-view",
@@ -91,7 +91,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "f01a160147d0aa57",
@@ -198,9 +199,16 @@
       "pretty-reader:Open Pretty Reader": false
     }
   },
-  "active": "cdf50769e306be47",
+  "active": "478660b90c26fed7",
   "lastOpenFiles": [
+    "算子系统/docs/01-算子定义/A4-去重算子.md",
+    "算子系统/docs/01-算子定义/A5-文本抽取算子.md",
+    "算子系统/docs/01-算子定义/A6-空间聚焦算子.md",
+    "算子系统/docs/01-算子定义/A7-时序定位与变化摘要算子.md",
+    "算子系统/docs/01-算子定义/A8-标注生成算子.md",
+    "算子系统/docs/01-算子定义/A9-候选选择与质量裁决算子.md",
     "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
+    "README.md",
     "video quality accessment.md",
     "基于结构的自适应采样.md",
     "tools/git_sync_project.ps1",
@@ -230,13 +238,6 @@
     "算子系统/docs/03-文献支撑/算子-论文映射.md",
     "算子系统/docs/03-文献支撑/文献支撑与最新趋势总结.md",
     "算子系统/docs/02-预设管线/预设管线与文献对照.md",
-    "算子系统/docs/01-算子定义/A9-标注生成算子.md",
-    "算子系统/docs/01-算子定义/A8-时序定位与变化摘要算子.md",
-    "算子系统/docs/01-算子定义/A7-空间聚焦算子.md",
-    "算子系统/docs/01-算子定义/A6-文本抽取算子.md",
-    "算子系统/docs/01-算子定义/A5-去重算子.md",
-    "算子系统/docs/01-算子定义/A4-自适应采样算子.md",
-    "算子系统/docs/01-算子定义/A3-采样算子.md",
     "site/assets/images/favicon.png",
     "Auto-claude-code-research-in-sleep/docs/wechat_group.jpg",
     "Auto-claude-code-research-in-sleep/docs/hero_interaction.svg",

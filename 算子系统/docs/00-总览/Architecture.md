@@ -4,7 +4,7 @@
 
 ## System Overview
 
-当前版本的系统围绕 10 个视频算子展开。它不是一组互不相关的工具集合，而是一条受统一中间态约束且具有上下游关系的数据处理链路。
+当前版本的系统围绕 9 个视频算子展开。它不是一组互不相关的工具集合，而是一条受统一中间态约束且具有上下游关系的数据处理链路。
 
 系统目标有三点：
 
@@ -23,20 +23,19 @@
 |---|---|
 | A1 Partition | 将原视频切成可处理片段 |
 | A2 Segment Cleaning | 过滤低质量片段和低价值片段 |
-| A3 Sampling | 生成基础样本帧 |
-| A5 Deduplication | 压缩冗余样本 |
-| A6 Text Extraction | 汇聚 OCR、字幕和 ASR 文本证据 |
+| A3 Sampling | 统一基础采样与自适应采样 |
+| A4 Deduplication | 压缩冗余样本 |
+| A5 Text Extraction | 汇聚 OCR、字幕和 ASR 文本证据 |
 
 ### Data-Augmentation layer
 该层负责提供近期文献更强调的高价值能力。
 
 | Operator | Responsibility |
 |---|---|
-| A4 Adaptive Sampling | 在固定预算下保留高价值时刻 |
-| A7 Spatial Focus | 生成区域级和对象级视觉证据 |
-| A8 Temporal Localization and Change Summary | 显式建模时间边界和变化事件 |
-| A9 Annotation Generation | 生成 caption、QA 和 summary |
-| A10 Selection and Quality Judgement | 选择高质量候选并过滤不可靠结果 |
+| A6 Spatial Focus | 生成区域级和对象级视觉证据 |
+| A7 Temporal Localization and Change Summary | 显式建模时间边界和变化事件 |
+| A8 Annotation Generation | 生成 caption、QA 和 summary |
+| A9 Selection and Quality Judgement | 选择高质量候选并过滤不可靠结果 |
 
 ## End-to-End Flow
 
@@ -46,13 +45,13 @@
 Raw Video
   -> A1 Partition
   -> A2 Segment Cleaning
-  -> A3 Sampling / A4 Adaptive Sampling
-  -> A5 Deduplication
-  -> A6 Text Extraction
-  -> A7 Spatial Focus
-  -> A8 Temporal Localization and Change Summary
-  -> A9 Annotation Generation
-  -> A10 Selection and Quality Judgement
+  -> A3 Sampling
+  -> A4 Deduplication
+  -> A5 Text Extraction
+  -> A6 Spatial Focus
+  -> A7 Temporal Localization and Change Summary
+  -> A8 Annotation Generation
+  -> A9 Selection and Quality Judgement
 ```
 
 更细一点的结构可以写成：
@@ -74,17 +73,18 @@ video
 
 ### Serial edges
 - `A1 -> A2`
-- `A2 -> A3/A4`
-- `A3/A4 -> A5`
-- `A5 -> A9`
-- `A9 -> A10`
+- `A2 -> A3`
+- `A3 -> A4`
+- `A4 -> A5/A6/A7`
+- `A5/A6/A7 -> A8`
+- `A8 -> A9`
 
 ### Parallel evidence branches
-- `A6` 从样本中提取文本证据
-- `A7` 从样本中提取空间证据
-- `A8` 从样本和局部证据中提取时间事件
+- `A5` 从样本中提取文本证据
+- `A6` 从样本中提取空间证据
+- `A7` 从样本和局部证据中提取时间事件
 
-这三条分支最终在 `A9` 汇合。
+这三条分支最终在 `A8` 汇合。
 
 
 
