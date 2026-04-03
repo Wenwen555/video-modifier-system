@@ -1,5 +1,14 @@
 {
   "defaultLayout": "article",
   "defaultTheme": "warm-paper",
-  "exportDirectory": "exports/pretty-reader"
+  "exportDirectory": "exports/pretty-reader",
+  "notePreferences": {
+    "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md": {
+      "theme": "warm-paper",
+      "columnMode": "double"
+    },
+    "MT-MG提高视频数据质量的思路.md": {
+      "columnMode": "single"
+    }
+  }
 }

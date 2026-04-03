@@ -4,11 +4,25 @@
     "type": "split",
     "children": [
       {
-        "id": "a95f61e3abc2fad5",
+        "id": "a618f55e9b491477",
         "type": "tabs",
         "children": [
           {
-            "id": "8a14699426c2b71f",
+            "id": "e5bb11e365bb9d92",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "MT-MG提高视频数据质量的思路.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "MT-MG提高视频数据质量的思路"
+            }
+          },
+          {
+            "id": "2987665e8f3912f7",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -19,18 +33,6 @@
               },
               "icon": "lucide-file",
               "title": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建"
-            }
-          },
-          {
-            "id": "478660b90c26fed7",
-            "type": "leaf",
-            "state": {
-              "type": "pretty-reader-view",
-              "state": {
-                "file": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md"
-              },
-              "icon": "book-open",
-              "title": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建 · Pretty Reader"
             }
           }
         ],
@@ -170,12 +172,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建 的大纲"
             }
           }
         ],
@@ -183,8 +186,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 515.5,
-    "collapsed": true
+    "width": 515.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -199,8 +201,13 @@
       "pretty-reader:Open Pretty Reader": false
     }
   },
-  "active": "478660b90c26fed7",
+  "active": "2987665e8f3912f7",
   "lastOpenFiles": [
+    "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
+    "MT-MG提高视频数据质量的思路.md",
+    "mermaid-diagram.png",
+    "未命名.base",
+    "video quality accessment.md",
     "算子系统/docs/01-算子定义/A9-Grounded核验与回修算子.md",
     "算子系统/docs/01-算子定义/A8-QA生成算子.md",
     "算子系统/docs/01-算子定义/A7-问题规划算子.md",
@@ -208,16 +215,13 @@
     "算子系统/docs/01-算子定义/A5-空间证据聚焦算子.md",
     "算子系统/docs/01-算子定义/A4-时序证据定位算子.md",
     "算子系统/docs/01-算子定义/A2-上下文编排算子.md",
-    "未命名.base",
     "算子系统/docs/01-算子定义/A4-去重算子.md",
     "算子系统/docs/01-算子定义/A5-文本抽取算子.md",
     "算子系统/docs/01-算子定义/A6-空间聚焦算子.md",
     "算子系统/docs/01-算子定义/A7-时序定位与变化摘要算子.md",
     "算子系统/docs/01-算子定义/A8-标注生成算子.md",
     "算子系统/docs/01-算子定义/A9-候选选择与质量裁决算子.md",
-    "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
     "README.md",
-    "video quality accessment.md",
     "基于结构的自适应采样.md",
     "tools/git_sync_project.ps1",
     "算子系统/README.md",
@@ -230,11 +234,8 @@
     "tools/setup_git_dual_machine.ps1",
     "tools/git_sync_research.ps1",
     "tools",
-    "MT-MG提高视频数据质量的思路.md",
-    "mermaid-diagram.png",
     "API/API记录.md",
     "API",
-    "Pretext Magazine Layout Demo.md",
     "算子系统/docs/assets/stylesheets/extra.css",
     "算子系统/docs/assets/stylesheets",
     "算子系统/docs/assets",

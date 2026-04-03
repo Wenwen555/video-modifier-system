@@ -52,6 +52,7 @@ export async function renderPrettyReaderDocument(
             ? prettyDocument.exportMarkdown
             : prettyDocument.displayMarkdown,
           prettyDocument.filePath,
+          prettyDocument,
         );
 
   if (prettyDocument.toc && renderedHeadings.length > 0) {
@@ -152,6 +153,7 @@ async function renderCards(
       component,
       card.markdown,
       prettyDocument.filePath,
+      prettyDocument,
     );
   }
 
@@ -164,10 +166,12 @@ async function renderMarkdownBlock(
   component: Component,
   markdown: string,
   sourcePath: string,
+  prettyDocument: Pick<PrettyReaderDocument, "layout" | "columnMode">,
 ): Promise<PrettyHeading[]> {
   containerEl.addClass("pretty-reader-prose", "markdown-rendered");
   await MarkdownRenderer.render(app, markdown, containerEl, sourcePath, component);
   enrichRichBlocks(containerEl);
+  applyColumnLayout(containerEl, prettyDocument);
   return assignHeadingAnchors(containerEl);
 }
 
@@ -303,6 +307,149 @@ function enrichRichBlocks(containerEl: HTMLElement): void {
   for (const footnotes of containerEl.querySelectorAll(".footnotes")) {
     footnotes.addClass("pretty-reader-footnotes");
   }
+}
+
+function applyColumnLayout(
+  containerEl: HTMLElement,
+  prettyDocument: Pick<PrettyReaderDocument, "layout" | "columnMode">,
+): void {
+  if (
+    prettyDocument.columnMode !== "double" ||
+    !supportsColumnMode(prettyDocument.layout)
+  ) {
+    return;
+  }
+
+  const topLevelBlocks = Array.from(containerEl.children).filter(
+    (child): child is HTMLElement => child instanceof HTMLElement,
+  );
+  if (topLevelBlocks.length === 0) {
+    return;
+  }
+
+  const fragment = containerEl.ownerDocument.createDocumentFragment();
+  let flow = createColumnFlow(containerEl.ownerDocument);
+
+  const flushFlow = (): void => {
+    if (flow.childElementCount === 0) {
+      return;
+    }
+    fragment.appendChild(flow);
+    flow = createColumnFlow(containerEl.ownerDocument);
+  };
+
+  for (const block of topLevelBlocks) {
+    decorateColumnBlock(block);
+
+    if (shouldSpanAllBlock(block)) {
+      flushFlow();
+      block.addClass("pretty-reader-span-all");
+      fragment.appendChild(block);
+      continue;
+    }
+
+    block.addClass("pretty-reader-column-item");
+    flow.appendChild(block);
+  }
+
+  flushFlow();
+  if (fragment.childNodes.length > 0) {
+    containerEl.replaceChildren(fragment);
+  }
+}
+
+function createColumnFlow(doc: Document): HTMLDivElement {
+  const flow = doc.createElement("div");
+  flow.className = "pretty-reader-column-flow";
+  return flow;
+}
+
+function decorateColumnBlock(block: HTMLElement): void {
+  if (isStandaloneEmphasisBlock(block)) {
+    block.addClass("pretty-reader-standalone-emphasis");
+  }
+}
+
+function shouldSpanAllBlock(block: HTMLElement): boolean {
+  if (matchesSpanAllBlock(block) || isStandaloneEmphasisBlock(block)) {
+    return true;
+  }
+
+  const directChildren = Array.from(block.children).filter(
+    (child): child is HTMLElement => child instanceof HTMLElement,
+  );
+
+  if (
+    directChildren.length === 1 &&
+    matchesSpanAllBlock(directChildren[0])
+  ) {
+    return true;
+  }
+
+  if (block.matches("p, div") && block.querySelector("img, .internal-embed")) {
+    return true;
+  }
+
+  return false;
+}
+
+function isStandaloneEmphasisBlock(block: HTMLElement): boolean {
+  if (!block.matches("p, div")) {
+    return false;
+  }
+
+  const elementChildren = Array.from(block.children).filter(
+    (child): child is HTMLElement => child instanceof HTMLElement,
+  );
+
+  if (elementChildren.length !== 1) {
+    return false;
+  }
+
+  const emphasisEl = elementChildren[0];
+  if (!emphasisEl.matches("strong, b, em")) {
+    return false;
+  }
+
+  for (const node of Array.from(block.childNodes)) {
+    if (node === emphasisEl) {
+      continue;
+    }
+
+    if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+      return false;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      return false;
+    }
+  }
+
+  const text = emphasisEl.textContent?.trim() ?? "";
+  return text.length >= 10;
+}
+
+function matchesSpanAllBlock(block: HTMLElement): boolean {
+  return block.matches(
+    [
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "pre",
+      "table",
+      "hr",
+      ".callout",
+      ".pretty-reader-callout",
+      ".math.math-block",
+      ".pretty-reader-math-block",
+      "mjx-container[display='true']",
+      ".pretty-reader-footnotes",
+      ".footnotes",
+    ].join(", "),
+  );
 }
 
 function slugifyHeading(value: string): string {

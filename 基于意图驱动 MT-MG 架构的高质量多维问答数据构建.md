@@ -120,8 +120,6 @@
 
 ##### 3）近年：从平坦 step 序列走向层次结构、任务图与程序知识图
 
-这是你最该补的部分。
-
 **Ego4D Goal-Step（NeurIPS 2023）** 是目前 procedure literature 里最值得写的一篇之一。它把 egocentric activities 标成 **goal–step–substep** 的层次结构，并提供 goal labels、step/substep labels，以及与 goal 相关的辅助信息，如 step completion status、step-to-goal relevance、summary description。它的重要性不只是“大”，而是它把 procedure 从“动作时间边界”升级成了**功能层级结构**。你文中的“Macro-Tree”如果要找最强近邻，首先就该对接 Ego4D Goal-Step，而不是只泛泛说“Ego4D 的步骤分解”。
 
 **GUIDE（IJCAI 2024）** 是另一条很值得写的线。它不是标注每个视频自己的步骤而已，而是引入 **task-level guideline**，也就是多个同任务视频共享的抽象指南，再在视频级标 specific steps，并设计 guideline summarization、guideline-guided captioning 等任务。这个设计很像你想做的宏观层：它不是简单时间顺序，而是**跨实例抽象出来的 canonical task scaffold**。如果你要论证 MT 中的上层意图/任务树是合理的，GUIDE 比旧的数据集更贴切。
