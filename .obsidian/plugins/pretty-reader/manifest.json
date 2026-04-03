@@ -1,0 +1,9 @@
+{
+  "id": "pretty-reader",
+  "name": "Pretty Reader",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Render Markdown notes as polished article, paper, or card-based reading views.",
+  "author": "OpenAI Codex",
+  "isDesktopOnly": true
+}
