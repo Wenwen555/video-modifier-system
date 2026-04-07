@@ -142,12 +142,12 @@ hide:
     <div class="entry-card__header">
       <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zm0-12v2h10V5zm10 16v-2h8v-2h-8v-2l-4 3 4 3zm8-12V7h-2V5h-2v2H9v2h8v2h2V9zm-12 4v2H3v-2z"/></svg></span><strong>算子定义</strong></span>
     </div>
-    <p class="entry-card__desc">查看 A1 到 A9 的接口、实现边界和技术文档。</p>
+    <p class="entry-card__desc">查看 A1 到 A9 的接口、实现边界和新命名体系下的技术文档。</p>
     <div class="entry-card__links">
       <a href="01-算子定义/A1-划分算子/">A1-划分算子</a>
       <a href="01-算子定义/A3-采样算子/">A3-采样算子（含自适应）</a>
-      <a href="01-算子定义/A4-去重算子/">A4-去重算子</a>
-      <a href="01-算子定义/A2-片段清洗算子/">其余算子见左侧导航</a>
+      <a href="01-算子定义/A4-时序证据定位算子/">A4-时序证据定位算子</a>
+      <a href="01-算子定义/A2-上下文编排算子/">其余算子见左侧导航</a>
     </div>
   </section>
 
@@ -170,33 +170,33 @@ hide:
   <section class="operator-group">
     <p class="operator-group__eyebrow">Foundation</p>
     <h3>基础链路</h3>
-    <p class="operator-group__desc">负责建立稳定的片段入口、统一采样、去重压缩和文本证据汇聚。</p>
+    <p class="operator-group__desc">负责建立稳定的片段入口、组织可消费上下文，并完成统一采样。</p>
     <div class="operator-group__chips">
       <a class="operator-chip" href="01-算子定义/A1-划分算子/"><span>A1</span>划分</a>
-      <a class="operator-chip" href="01-算子定义/A2-片段清洗算子/"><span>A2</span>片段清洗</a>
+      <a class="operator-chip" href="01-算子定义/A2-上下文编排算子/"><span>A2</span>上下文编排</a>
       <a class="operator-chip" href="01-算子定义/A3-采样算子/"><span>A3</span>采样</a>
-      <a class="operator-chip" href="01-算子定义/A4-去重算子/"><span>A4</span>去重</a>
-      <a class="operator-chip" href="01-算子定义/A5-文本抽取算子/"><span>A5</span>文本抽取</a>
     </div>
   </section>
 
   <section class="operator-group">
-    <p class="operator-group__eyebrow">Enhancement</p>
-    <h3>增强链路</h3>
-    <p class="operator-group__desc">负责在有限预算内补强时序敏感性、空间证据和变化建模能力。</p>
+    <p class="operator-group__eyebrow">Evidence</p>
+    <h3>证据链路</h3>
+    <p class="operator-group__desc">负责从采样结果中抽取时序、空间和文本三类可回溯证据。</p>
     <div class="operator-group__chips">
-      <a class="operator-chip" href="01-算子定义/A6-空间聚焦算子/"><span>A6</span>空间聚焦</a>
-      <a class="operator-chip" href="01-算子定义/A7-时序定位与变化摘要算子/"><span>A7</span>时序定位与变化摘要</a>
+      <a class="operator-chip" href="01-算子定义/A4-时序证据定位算子/"><span>A4</span>时序证据定位</a>
+      <a class="operator-chip" href="01-算子定义/A5-空间证据聚焦算子/"><span>A5</span>空间证据聚焦</a>
+      <a class="operator-chip" href="01-算子定义/A6-文本辅证抽取算子/"><span>A6</span>文本辅证抽取</a>
     </div>
   </section>
 
   <section class="operator-group">
     <p class="operator-group__eyebrow">Generation</p>
-    <h3>生成与裁决</h3>
-    <p class="operator-group__desc">负责把多路证据组织成训练标注，并在最终出口做质量筛选与保留决策。</p>
+    <h3>规划与回修</h3>
+    <p class="operator-group__desc">负责把多路证据组织成问题计划，生成 QA，并做 grounded 核验与回修。</p>
     <div class="operator-group__chips">
-      <a class="operator-chip" href="01-算子定义/A8-标注生成算子/"><span>A8</span>标注生成</a>
-      <a class="operator-chip" href="01-算子定义/A9-候选选择与质量裁决算子/"><span>A9</span>质量裁决</a>
+      <a class="operator-chip" href="01-算子定义/A7-问题规划算子/"><span>A7</span>问题规划</a>
+      <a class="operator-chip" href="01-算子定义/A8-QA生成算子/"><span>A8</span>QA生成</a>
+      <a class="operator-chip" href="01-算子定义/A9-Grounded核验与回修算子/"><span>A9</span>Grounded核验与回修</a>
     </div>
   </section>
 </div>

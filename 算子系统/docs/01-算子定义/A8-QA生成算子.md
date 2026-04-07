@@ -1,7 +1,7 @@
-# 标注生成算子（A8）技术文档
+# QA生成算子（A8）技术文档
 
 ## 1. 在系统中的定位
-标注生成算子负责把前面各类结构化证据转化为可训练、可筛选、可追溯的文本标注。它是整条视频增强链路中最直接面向数据产出的模块。
+QA生成算子负责把 A7 产出的题目蓝图变成可训练、可筛选、可追溯的问答候选。它是整条链路中最直接面向数据产出的模块。
 
 ## 2. 文献依赖等级
 
@@ -10,88 +10,77 @@
 
 ### 2.1 文献锚点
 - LongViTU
-- GROVE / HowToGround1M
+- VDC-Agent
+- Video-ChatGPT
 - VideoRefer Suite
 - TimeChat-Captioner
-- VDC-Agent
 
 ### 2.2 从文献保留了什么
-- 标注应由多路证据共同驱动
-- 标注不只包括 caption，还包括 grounded caption、summary 和 QA
-- 自动生成的标注需要为后续筛选保留候选和证据引用
+- QA 生成必须显式依赖证据，而不是只依赖全局视频印象。
+- 近期数据构建工作越来越强调 grounded QA，而不是泛化 caption。
+- 自动生成结果必须为后续核验保留问题计划和证据引用。
 
 ## 3. 子模式定义
 
-### 3.1 FRAME_CAPTION
-针对单帧生成描述。
+### 3.1 SINGLE_TURN_QA
+生成单轮开放式问答。
 
-### 3.2 SEGMENT_CAPTION
-针对单片段生成段落级描述。
+### 3.2 MULTIPLE_CHOICE_QA
+生成带干扰项的选择题。
 
-### 3.3 DENSE_CAPTION
-针对同一片段内部多个事件生成带顺序或带边界的描述。
+### 3.3 TEMPORAL_QA
+生成围绕时刻、顺序和变化的问题。
 
-### 3.4 TEMPORAL_QA
-生成围绕“何时发生什么”的问答。
-
-### 3.5 SPATIAL_QA
-生成围绕“哪里有什么、哪个对象如何变化”的问答。
-
-### 3.6 SUMMARY
-生成视频级或多片段级摘要。
+### 3.4 SPATIAL_QA
+生成围绕对象、区域和局部细节的问题。
 
 ## 4. 输入规范
-消费 `segments[]`、`samples[]`、`text_signals[]`、`regions[]`、`temporal_events[]`。
+消费 `question_plans[]` 及其关联证据对象。
 
 ### 4.1 必需输入
-- 至少一种有效证据对象
-- `config.annotation_mode`
+- `question_plans[].plan_id`
+- `question_plans[].evidence_refs`
 
 ### 4.2 可选输入
-- `config.max_candidates_per_target`
-- `config.target_style`
-- `config.max_length`
-- `config.use_temporal_events`
-- `config.use_text_signals`
+- `config.max_candidates_per_plan`
+- `config.answer_style`
+- `config.max_answer_length`
 
 ## 5. 输出规范
-写入 `annotations[]`，每条标注至少包含：
+写入 `qa_pairs[]`，每条候选至少包含：
 
-- `annotation_id`
-- `annotation_type`
-- `text`
+- `qa_id`
+- `plan_id`
+- `question`
+- `answer`
 - `evidence_refs`
-- `target_ids`
 - `status`
 
 推荐附加字段：
 
-- `answer`
-- `difficulty`
 - `candidate_rank`
-- `prompt_style`
+- `difficulty`
+- `distractors`
 - `language`
 
 ## 6. 关键参数
 
 | 参数 | 作用 |
 |---|---|
-| `max_candidates_per_target` | 每个目标生成多少候选 |
-| `target_style` | 控制描述风格或 QA 风格 |
-| `max_length` | 控制输出长度 |
-| `use_temporal_events` | 是否融合时序摘要 |
-| `use_text_signals` | 是否融合文本证据 |
+| `max_candidates_per_plan` | 每个问题计划生成多少候选 |
+| `answer_style` | 控制答案风格 |
+| `max_answer_length` | 控制答案长度 |
 
 ## 7. 与上下游的绑定关系
-- 上游：A5、A6、A7 提供关键证据
-- 下游：A9 对候选进行裁决与保留
+- 上游：A7 提供问题计划，A4/A5/A6 提供可回放证据
+- 下游：A9 对候选 QA 做 grounded 核验与回修
 
 ## 8. 典型失败模式
-- 证据引用不足，生成文本漂移
+- 问题合理但答案没有真正绑定证据
 - 多路证据冲突时直接拼接，导致逻辑错误
-- 视频级摘要过于空泛，缺少时间或对象细节
+- 问题粒度和答案粒度不匹配
 
 ## 9. 推荐使用场景
-- 自动构建 caption 数据
-- 自动构建 temporal QA / spatial QA
-- 构建适合视频指令微调的数据集
+- 自动构建 grounded QA 数据
+- 需要控制题型分布的数据集构建
+- 需要展示从计划到生成的完整链路

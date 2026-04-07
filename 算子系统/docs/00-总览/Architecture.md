@@ -17,25 +17,25 @@
 系统分为两层。
 
 ### Base system layer
-该层负责建立主链路、控制预算和清理输入。
+该层负责建立主链路、控制预算并组织可消费上下文。
 
 | Operator | Responsibility |
 |---|---|
 | A1 Partition | 将原视频切成可处理片段 |
-| A2 Segment Cleaning | 过滤低质量片段和低价值片段 |
+| A2 Context Orchestration | 合并、附着和整理片段上下文 |
 | A3 Sampling | 统一基础采样与自适应采样 |
-| A4 Deduplication | 压缩冗余样本 |
-| A5 Text Extraction | 汇聚 OCR、字幕和 ASR 文本证据 |
 
-### Data-Augmentation layer
-该层负责提供近期文献更强调的高价值能力。
+### Evidence and QA layer
+该层负责提取多路证据，并把证据组织成可核验的 QA 数据。
 
 | Operator | Responsibility |
 |---|---|
-| A6 Spatial Focus | 生成区域级和对象级视觉证据 |
-| A7 Temporal Localization and Change Summary | 显式建模时间边界和变化事件 |
-| A8 Annotation Generation | 生成 caption、QA 和 summary |
-| A9 Selection and Quality Judgement | 选择高质量候选并过滤不可靠结果 |
+| A4 Temporal Evidence Localization | 显式定位关键时刻、变化边界和事件链 |
+| A5 Spatial Evidence Focus | 生成区域级和对象级视觉证据 |
+| A6 Textual Auxiliary Extraction | 汇聚 OCR、字幕和 ASR 文本辅证 |
+| A7 Question Planning | 规划题型、证据引用和答案形式 |
+| A8 QA Generation | 生成 grounded QA 候选 |
+| A9 Grounded Verification and Repair | 核验 QA 并执行回修或拒绝 |
 
 ## End-to-End Flow
 
@@ -44,14 +44,14 @@
 ```text
 Raw Video
   -> A1 Partition
-  -> A2 Segment Cleaning
+  -> A2 Context Orchestration
   -> A3 Sampling
-  -> A4 Deduplication
-  -> A5 Text Extraction
-  -> A6 Spatial Focus
-  -> A7 Temporal Localization and Change Summary
-  -> A8 Annotation Generation
-  -> A9 Selection and Quality Judgement
+  -> A4 Temporal Evidence Localization
+  -> A5 Spatial Evidence Focus
+  -> A6 Textual Auxiliary Extraction
+  -> A7 Question Planning
+  -> A8 QA Generation
+  -> A9 Grounded Verification and Repair
 ```
 
 更细一点的结构可以写成：
@@ -59,12 +59,12 @@ Raw Video
 ```text
 video
   -> segments
-  -> cleaned segments
+  -> orchestrated segments
   -> samples
-  -> compressed samples
-  -> text / region / temporal evidence
-  -> annotations
-  -> accepted outputs
+  -> temporal / spatial / textual evidence
+  -> question plans
+  -> qa pairs
+  -> verified outputs
 ```
 
 ## Operator Interaction
@@ -74,17 +74,17 @@ video
 ### Serial edges
 - `A1 -> A2`
 - `A2 -> A3`
-- `A3 -> A4`
-- `A4 -> A5/A6/A7`
-- `A5/A6/A7 -> A8`
+- `A3 -> A4/A5/A6`
+- `A4/A5/A6 -> A7`
+- `A7 -> A8`
 - `A8 -> A9`
 
 ### Parallel evidence branches
-- `A5` 从样本中提取文本证据
-- `A6` 从样本中提取空间证据
-- `A7` 从样本和局部证据中提取时间事件
+- `A4` 从样本中提取时间边界和关键事件
+- `A5` 从样本中提取空间证据
+- `A6` 从样本与外挂资源中提取文本辅证
 
-这三条分支最终在 `A8` 汇合。
+这三条分支最终在 `A7` 汇合，之后由 `A8` 负责具体 QA 生成。
 
 
 
@@ -102,11 +102,12 @@ video
 video_id
   -> segment_id
     -> sample_id
-      -> text_signal_id
-      -> region_id
       -> event_id
-        -> annotation_id
-          -> quality_id
+      -> region_id
+      -> text_signal_id
+        -> plan_id
+          -> qa_id
+            -> verification_id
 ```
 
 这条血缘链意味着：
