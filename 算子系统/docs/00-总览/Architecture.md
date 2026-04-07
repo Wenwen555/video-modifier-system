@@ -30,7 +30,7 @@
 
 | Operator | Responsibility |
 |---|---|
-| A4 Temporal Evidence Localization | 显式定位关键时刻、变化边界和事件链 |
+| A4 Temporal Evidence Localization | 构建 question-ready but not question-bound 的候选时序证据池 |
 | A5 Spatial Evidence Focus | 生成区域级和对象级视觉证据 |
 | A6 Textual Auxiliary Extraction | 汇聚 OCR、字幕和 ASR 文本辅证 |
 | A7 Question Planning | 规划题型、证据引用和答案形式 |
@@ -80,7 +80,7 @@ video
 - `A8 -> A9`
 
 ### Parallel evidence branches
-- `A4` 从样本中提取时间边界和关键事件
+- `A4` 从样本中提取可供后续问题规划消费的时间边界和关键事件
 - `A5` 从样本中提取空间证据
 - `A6` 从样本与外挂资源中提取文本辅证
 
