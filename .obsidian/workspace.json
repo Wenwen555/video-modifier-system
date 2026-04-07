@@ -4,39 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "a618f55e9b491477",
+        "id": "bd482f1a5b6ef47e",
         "type": "tabs",
         "children": [
           {
-            "id": "e5bb11e365bb9d92",
+            "id": "2ec9104a61a960c3",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "MT-MG提高视频数据质量的思路.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "MT-MG提高视频数据质量的思路"
-            }
-          },
-          {
-            "id": "2987665e8f3912f7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建"
+              "title": "新标签页"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -93,8 +74,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "f01a160147d0aa57",
@@ -172,13 +152,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "基于意图驱动 MT-MG 架构的高质量多维问答数据构建 的大纲"
+              "title": "大纲"
             }
           }
         ],
@@ -196,18 +175,18 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false,
-      "pretext-magazine-layout:Pretext Magazine: Open active note": false,
-      "pretty-reader:Open Pretty Reader": false
+      "bases:新建数据库": false
     }
   },
-  "active": "2987665e8f3912f7",
+  "active": "2ec9104a61a960c3",
   "lastOpenFiles": [
-    "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
+    "基于结构的自适应采样.md",
+    "video quality accessment.md",
+    "README.md",
     "MT-MG提高视频数据质量的思路.md",
+    "基于意图驱动 MT-MG 架构的高质量多维问答数据构建.md",
     "mermaid-diagram.png",
     "未命名.base",
-    "video quality accessment.md",
     "算子系统/docs/01-算子定义/A9-Grounded核验与回修算子.md",
     "算子系统/docs/01-算子定义/A8-QA生成算子.md",
     "算子系统/docs/01-算子定义/A7-问题规划算子.md",
@@ -221,8 +200,6 @@
     "算子系统/docs/01-算子定义/A7-时序定位与变化摘要算子.md",
     "算子系统/docs/01-算子定义/A8-标注生成算子.md",
     "算子系统/docs/01-算子定义/A9-候选选择与质量裁决算子.md",
-    "README.md",
-    "基于结构的自适应采样.md",
     "tools/git_sync_project.ps1",
     "算子系统/README.md",
     "记录/2026.3.30记录.md",
