@@ -12,9 +12,16 @@
 - 在不同需求下复用同一套数据流
 - 让最终标注能够回溯到明确证据
 
+需要特别强调的是：
+
+- 算子编号是稳定身份标识
+- 不代表所有 preset 都必须遵循唯一的数字顺序
+
+在当前默认主链路中，`A7 -> A8` 会先于 `A4/A5/A6` 执行；而在 route-two 推理模式中，外部问题甚至可以直接从 `A8` 进入系统。
+
 ## Layered Architecture
 
-系统分为两层。
+系统分为四层。
 
 ### Base system layer
 该层负责建立主链路、控制预算并组织可消费上下文。
@@ -25,33 +32,44 @@
 | A2 Context Orchestration | 合并、附着和整理片段上下文 |
 | A3 Sampling | 统一基础采样与自适应采样 |
 
-### Evidence and QA layer
-该层负责提取多路证据，并把证据组织成可核验的 QA 数据。
+### Draft and Query layer
+该层负责先形成低成本草案，再把草案或外部问题转成可执行的 grounding query。
 
 | Operator | Responsibility |
 |---|---|
-| A4 Temporal Evidence Localization | 构建 question-ready but not question-bound 的候选时序证据池 |
-| A5 Spatial Evidence Focus | 生成区域级和对象级视觉证据 |
-| A6 Textual Auxiliary Extraction | 汇聚 OCR、字幕和 ASR 文本辅证 |
-| A7 Question Planning | 规划题型、证据引用和答案形式 |
-| A8 QA Generation | 生成 grounded QA 候选 |
-| A9 Grounded Verification and Repair | 核验 QA 并执行回修或拒绝 |
+| A7 Draft Generation | 生成粗 caption、QA 草案和 claim slots |
+| A8 Query Normalization | 把草案或外部问题改写成 query bundles，并控制证据分支预算 |
+
+### Grounding revisit layer
+该层负责围绕 query bundle 回到视频中显式取证。
+
+| Operator | Responsibility |
+|---|---|
+| A4 Temporal Evidence Localization | 先缩小时序范围，找出支持或反驳 claim 的关键 span |
+| A5 Spatial Evidence Focus | 在候选 span 内生成区域级和对象级视觉证据 |
+| A6 Textual Auxiliary Extraction | 在候选 span 内汇聚 OCR、字幕和 ASR 文本辅证 |
+
+### Audit and release layer
+该层负责 grounded 回修、严格审查和最终出站控制。
+
+| Operator | Responsibility |
+|---|---|
+| A9 Grounded Revision and Quality Screening | 执行证据摘要、答案回修、严格审查与质量筛查 |
 
 ## End-to-End Flow
 
-主数据流如下：
+默认主数据流如下：
 
 ```text
 Raw Video
   -> A1 Partition
   -> A2 Context Orchestration
   -> A3 Sampling
+  -> A7 Draft Generation
+  -> A8 Query Normalization
   -> A4 Temporal Evidence Localization
-  -> A5 Spatial Evidence Focus
-  -> A6 Textual Auxiliary Extraction
-  -> A7 Question Planning
-  -> A8 QA Generation
-  -> A9 Grounded Verification and Repair
+  -> [A5 Spatial Evidence Focus + A6 Textual Auxiliary Extraction]
+  -> A9 Grounded Revision and Quality Screening
 ```
 
 更细一点的结构可以写成：
@@ -61,38 +79,55 @@ video
   -> segments
   -> orchestrated segments
   -> samples
+  -> draft units
+  -> query bundles
   -> temporal / spatial / textual evidence
-  -> question plans
-  -> qa pairs
+  -> revised qa pairs
   -> verified outputs
+```
+
+路线二中的常见变体是：
+
+```text
+External Question
+  -> A8 Query Normalization
+  -> A4 Temporal Evidence Localization
+  -> [A5 Spatial Evidence Focus + A6 Textual Auxiliary Extraction]
+  -> A9 Grounded Revision and Quality Screening
 ```
 
 ## Operator Interaction
 
 并非所有算子都严格串行。
 
-### Serial edges
+### Serial edges in default route
 - `A1 -> A2`
 - `A2 -> A3`
-- `A3 -> A4/A5/A6`
-- `A4/A5/A6 -> A7`
+- `A3 -> A7`
 - `A7 -> A8`
-- `A8 -> A9`
+- `A8 -> A4`
+- `A4 -> A5/A6`
+- `A4/A5/A6 -> A9`
+
+### Route-two shortcut
+- `External Question -> A8`
+- `A8 -> A4`
+- `A4 -> A5/A6`
+- `A4/A5/A6 -> A9`
 
 ### Parallel evidence branches
-- `A4` 从样本中提取可供后续问题规划消费的时间边界和关键事件
-- `A5` 从样本中提取空间证据
-- `A6` 从样本与外挂资源中提取文本辅证
+- `A4` 负责先缩小时序范围，并把 claim 挂到候选 span 上
+- `A5` 在候选 span 内继续提取空间证据
+- `A6` 在候选 span 内继续提取文本辅证
 
-这三条分支最终在 `A7` 汇合，之后由 `A8` 负责具体 QA 生成。
+这三条分支最终在 `A9` 汇合，之后由 `A9` 完成证据摘要、答案回修、严格审查和最终质量筛查。
 
+## 设计原则
 
-
-## 设计原则：
-
-1. 算子只追加结果，不覆盖上游原始对象
-2. 下游只通过对象引用消费上游产物
-3. 每条最终标注都必须挂到至少一种显式证据上
+1. 算子只追加结果，不覆盖上游原始对象。
+2. 下游只通过对象引用消费上游产物。
+3. 每条最终标注都必须挂到至少一种显式证据上。
+4. 草案可以先于 full grounding 出现，但最终结果不能绕过 grounded 闭环。
 
 ## Data Lineage
 
@@ -102,26 +137,25 @@ video
 video_id
   -> segment_id
     -> sample_id
-      -> event_id
-      -> region_id
-      -> text_signal_id
-        -> plan_id
-          -> qa_id
-            -> verification_id
+      -> draft_id
+        -> query_bundle_id
+          -> event_id
+          -> region_id
+          -> text_signal_id
+            -> qa_id
+              -> verification_id
 ```
 
 这条血缘链意味着：
 
 - 标注可以回溯到时间范围
 - 标注可以回溯到样本帧
-- 标注可以回溯到文本、区域或时间事件证据
+- 标注可以回溯到最初草案、规范化 query 与最终证据对象
 - 裁决结果可以明确指出保留或拒绝原因
 
 ## Preset Architecture
 
 我们采用经典文献工作的主链路作为预设，具体请参考 [预设管线与文献对照](../02-预设管线/预设管线与文献对照.md)。
-
-
 
 ## Scope
 

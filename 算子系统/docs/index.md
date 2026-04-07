@@ -50,7 +50,7 @@ hide:
 
   .operator-section-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
     margin-top: 1rem;
   }
@@ -98,7 +98,8 @@ hide:
   <h1>视频算子系统</h1>
   <p class="landing-subtitle">
     面向视频增强、样本构建与标注生成的高自由度算子系统。当前版本围绕 9 个原子算子组织，
-    覆盖从片段划分、采样、证据提取到标注生成与质量裁决的完整链路。
+    默认主链路收敛为 `A1 -> A2 -> A3 -> A7 -> A8 -> A4/A5/A6 -> A9`，
+    覆盖从片段划分、粗草案生成、grounding 回看，到最终回修与质量筛查的完整闭环。
   </p>
 </div>
 
@@ -108,7 +109,7 @@ hide:
     <span>原子算子</span>
   </div>
   <div class="landing-chip">
-    <strong>3</strong>
+    <strong>4</strong>
     <span>总览页面</span>
   </div>
   <div class="landing-chip">
@@ -121,6 +122,7 @@ hide:
 
 - 给出一套可复用、可扩展的视频算子系统设计，而不是一次性实验脚本。
 - 明确系统结构、算子边界、统一协议和上下游关系。
+- 明确“算子编号是稳定标识，不等于唯一执行顺序”，尤其在默认 grounded QA 主链路中，A7/A8 会先于 A4/A5/A6 执行。
 - 为单算子实现、预设管线和文献支撑提供清晰入口。
 
 ## 主要入口
@@ -130,10 +132,11 @@ hide:
     <div class="entry-card__header">
       <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4c0 1.11.45 2.11 1.17 2.83L12 22l2.83-7.17A4 4 0 0 0 16 12a4 4 0 0 0-4-4m0 2a2 2 0 0 1 2 2c0 .55-.22 1.05-.59 1.41L12 17l-1.41-3.59A1.99 1.99 0 0 1 10 12a2 2 0 0 1 2-2m8-7l-8.59 3.44L4 4l2.57 7.41L3 20l8.59-3.44L20 20l-3.44-8.59z"/></svg></span><strong>系统总览</strong></span>
     </div>
-    <p class="entry-card__desc">先理解系统目标、结构分层与统一协议。</p>
+    <p class="entry-card__desc">先理解系统目标、结构分层、默认主链路与统一协议。</p>
     <div class="entry-card__links">
       <a href="00-总览/高自由度视频算子系统总览/">高自由度视频算子系统总览</a>
       <a href="00-总览/Architecture/">Architecture</a>
+      <a href="00-总览/Grounded-QA-路径对比/">Grounded QA 路径对比</a>
       <a href="00-总览/统一中间态与数据流协议/">统一中间态与数据流协议</a>
     </div>
   </section>
@@ -142,11 +145,11 @@ hide:
     <div class="entry-card__header">
       <span class="card-title-with-icon"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zm0-12v2h10V5zm10 16v-2h8v-2h-8v-2l-4 3 4 3zm8-12V7h-2V5h-2v2H9v2h8v2h2V9zm-12 4v2H3v-2z"/></svg></span><strong>算子定义</strong></span>
     </div>
-    <p class="entry-card__desc">查看 A1 到 A9 的接口、实现边界和新命名体系下的技术文档。</p>
+    <p class="entry-card__desc">查看 A1 到 A9 的接口、实现边界，以及“草案生成 -> Query规范化 -> grounding回看 -> 质量筛查”的落地版本。</p>
     <div class="entry-card__links">
       <a href="01-算子定义/A1-划分算子/">A1-划分算子</a>
       <a href="01-算子定义/A3-采样算子/">A3-采样算子（含自适应）</a>
-      <a href="01-算子定义/A4-时序证据定位算子/">A4-时序证据定位算子</a>
+      <a href="01-算子定义/A7-草案生成算子/">A7-草案生成算子</a>
       <a href="01-算子定义/A2-上下文编排算子/">其余算子见左侧导航</a>
     </div>
   </section>
@@ -179,9 +182,19 @@ hide:
   </section>
 
   <section class="operator-group">
-    <p class="operator-group__eyebrow">Evidence</p>
-    <h3>证据链路</h3>
-    <p class="operator-group__desc">负责从采样结果中抽取时序、空间和文本三类可回溯证据。</p>
+    <p class="operator-group__eyebrow">Draft</p>
+    <h3>草案与 Query</h3>
+    <p class="operator-group__desc">负责先产出粗 caption 与 QA 草案，再把自然语言草案规范化为可执行的 grounding query。</p>
+    <div class="operator-group__chips">
+      <a class="operator-chip" href="01-算子定义/A7-草案生成算子/"><span>A7</span>草案生成</a>
+      <a class="operator-chip" href="01-算子定义/A8-Query规范化算子/"><span>A8</span>Query规范化</a>
+    </div>
+  </section>
+
+  <section class="operator-group">
+    <p class="operator-group__eyebrow">Grounding</p>
+    <h3>回看取证</h3>
+    <p class="operator-group__desc">负责按 query bundles 回到视频中收缩时序范围，并抽取空间与文本辅证。</p>
     <div class="operator-group__chips">
       <a class="operator-chip" href="01-算子定义/A4-时序证据定位算子/"><span>A4</span>时序证据定位</a>
       <a class="operator-chip" href="01-算子定义/A5-空间证据聚焦算子/"><span>A5</span>空间证据聚焦</a>
@@ -190,20 +203,19 @@ hide:
   </section>
 
   <section class="operator-group">
-    <p class="operator-group__eyebrow">Generation</p>
-    <h3>规划与回修</h3>
-    <p class="operator-group__desc">负责把多路证据组织成问题计划，生成 QA，并做 grounded 核验与回修。</p>
+    <p class="operator-group__eyebrow">Audit</p>
+    <h3>回修与筛查</h3>
+    <p class="operator-group__desc">负责证据摘要、答案回修、严格审查和最终质量筛查，是系统的最终出口。</p>
     <div class="operator-group__chips">
-      <a class="operator-chip" href="01-算子定义/A7-问题规划算子/"><span>A7</span>问题规划</a>
-      <a class="operator-chip" href="01-算子定义/A8-QA生成算子/"><span>A8</span>QA生成</a>
-      <a class="operator-chip" href="01-算子定义/A9-Grounded核验与回修算子/"><span>A9</span>Grounded核验与回修</a>
+      <a class="operator-chip" href="01-算子定义/A9-Grounded回修与质量筛查算子/"><span>A9</span>Grounded回修与质量筛查</a>
     </div>
   </section>
 </div>
 
 ## 建议阅读顺序
 
-1. 先读 [高自由度视频算子系统总览](00-总览/高自由度视频算子系统总览.md)，了解系统目标和 9 个算子的整体设计。
-2. 再读 [Architecture](00-总览/Architecture.md)，了解系统层次、主数据流和文献驱动的预设架构。
-3. 然后读 [统一中间态与数据流协议](00-总览/统一中间态与数据流协议.md)，确认统一对象结构和数据血缘约束。
-4. 最后按需要进入具体算子页面、预设页面和文献支撑页面。
+1. 先读 [高自由度视频算子系统总览](00-总览/高自由度视频算子系统总览.md)，了解系统目标、默认主链路和 9 个算子的整体设计。
+2. 再读 [Architecture](00-总览/Architecture.md)，了解“编号稳定、顺序可变”的结构设计与默认执行顺序。
+3. 然后读 [Grounded QA 路径对比](00-总览/Grounded-QA-路径对比.md)，理解 `QA-first`、`ground-first` 和 `multi-path` 三类流程的差别。
+4. 再读 [统一中间态与数据流协议](00-总览/统一中间态与数据流协议.md)，确认 `draft_units`、`query_bundles`、多路 evidence 和最终 QA 的统一对象约束。
+5. 最后按需要进入具体算子页面、预设页面和文献支撑页面。
