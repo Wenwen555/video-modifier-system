@@ -1,30 +1,23 @@
 # Architecture
 
-本页用于集中说明视频算子系统的结构设计，包括系统分层、主数据流、中间态、数据血缘和预设管线关系。
+本页集中说明视频算子系统的结构设计，包括系统分层、主数据流、中间态、数据血缘和预设管线关系。
 
 ## System Overview
 
-当前版本的系统围绕 9 个视频算子展开。它不是一组互不相关的工具集合，而是一条受统一中间态约束且具有上下游关系的数据处理链路。
+当前版本围绕 10 个视频算子展开。系统默认不是“问答推理系统”，而是“视频数据构造系统”。
 
-系统目标有三点：
+它的核心目标有三点：
 
-- 为视频增强和标注构建提供稳定入口
-- 在不同需求下复用同一套数据流
-- 让最终标注能够回溯到明确证据
-
-需要特别强调的是：
-
-- 算子编号是稳定身份标识
-- 不代表所有 preset 都必须遵循唯一的数字顺序
-
-在当前默认主链路中，`A7 -> A8` 会先于 `A4/A5/A6` 执行；而在 route-two 推理模式中，外部问题甚至可以直接从 `A8` 进入系统。
+- 建立稳定的结构骨架
+- 从骨架中共同合成 `Question / Answer / Evidence`
+- 让最终样本可回修、可筛查、可追溯
 
 ## Layered Architecture
 
 系统分为四层。
 
 ### Base system layer
-该层负责建立主链路、控制预算并组织可消费上下文。
+负责建立主链路入口、组织上下文和控制采样预算。
 
 | Operator | Responsibility |
 |---|---|
@@ -32,29 +25,30 @@
 | A2 Context Orchestration | 合并、附着和整理片段上下文 |
 | A3 Sampling | 统一基础采样与自适应采样 |
 
-### Draft and Query layer
-该层负责先形成低成本草案，再把草案或外部问题转成可执行的 grounding query。
+### Scaffold extraction layer
+负责从视频中提取可合成数据的结构信息。
 
 | Operator | Responsibility |
 |---|---|
-| A7 Draft Generation | 生成粗 caption、QA 草案和 claim slots |
-| A8 Query Normalization | 把草案或外部问题改写成 query bundles，并控制证据分支预算 |
+| A4 Coarse Caption | 生成片段级或上下文级粗描述 |
+| A5 Temporal Structure Extraction | 抽取事件、时间窗和阶段关系 |
+| A6 Textual Auxiliary Extraction | 汇聚 OCR、字幕和 ASR 辅证 |
 
-### Grounding revisit layer
-该层负责围绕 query bundle 回到视频中显式取证。
-
-| Operator | Responsibility |
-|---|---|
-| A4 Temporal Evidence Localization | 先缩小时序范围，找出支持或反驳 claim 的关键 span |
-| A5 Spatial Evidence Focus | 在候选 span 内生成区域级和对象级视觉证据 |
-| A6 Textual Auxiliary Extraction | 在候选 span 内汇聚 OCR、字幕和 ASR 文本辅证 |
-
-### Audit and release layer
-该层负责 grounded 回修、严格审查和最终出站控制。
+### Scaffold and synthesis layer
+负责构建结构骨架并共同合成 Q/A/E。
 
 | Operator | Responsibility |
 |---|---|
-| A9 Grounded Revision and Quality Screening | 执行证据摘要、答案回修、严格审查与质量筛查 |
+| A7 Structural Scaffold Construction | 把 caption、时序结构和文本辅证组织成 chunk / tree / graph |
+| A8 Joint QAE Synthesis | 在骨架约束下联合生成 Question、Answer 和 Evidence |
+
+### Revision and audit layer
+负责回修与最终出站控制。
+
+| Operator | Responsibility |
+|---|---|
+| A9 Consistency Revision | 对三元组做字段对齐、冲突消解和局部修订 |
+| A10 Quality Screening | 执行规则过滤、评分排序和保留决策 |
 
 ## End-to-End Flow
 
@@ -65,11 +59,13 @@ Raw Video
   -> A1 Partition
   -> A2 Context Orchestration
   -> A3 Sampling
-  -> A7 Draft Generation
-  -> A8 Query Normalization
-  -> A4 Temporal Evidence Localization
-  -> [A5 Spatial Evidence Focus + A6 Textual Auxiliary Extraction]
-  -> A9 Grounded Revision and Quality Screening
+  -> A4 Coarse Caption
+  -> A5 Temporal Structure Extraction
+  -> A6 Textual Auxiliary Extraction
+  -> A7 Structural Scaffold Construction
+  -> A8 Joint QAE Synthesis
+  -> A9 Consistency Revision
+  -> A10 Quality Screening
 ```
 
 更细一点的结构可以写成：
@@ -79,55 +75,37 @@ video
   -> segments
   -> orchestrated segments
   -> samples
-  -> draft units
-  -> query bundles
-  -> temporal / spatial / textual evidence
-  -> revised qa pairs
-  -> verified outputs
-```
-
-路线二中的常见变体是：
-
-```text
-External Question
-  -> A8 Query Normalization
-  -> A4 Temporal Evidence Localization
-  -> [A5 Spatial Evidence Focus + A6 Textual Auxiliary Extraction]
-  -> A9 Grounded Revision and Quality Screening
+  -> coarse captions / temporal structures / text signals
+  -> scaffold units
+  -> qae triplets
+  -> revisions
+  -> quality-approved outputs
 ```
 
 ## Operator Interaction
 
-并非所有算子都严格串行。
-
 ### Serial edges in default route
 - `A1 -> A2`
 - `A2 -> A3`
-- `A3 -> A7`
+- `A3 -> A4/A5/A6`
+- `A4/A5/A6 -> A7`
 - `A7 -> A8`
-- `A8 -> A4`
-- `A4 -> A5/A6`
-- `A4/A5/A6 -> A9`
+- `A8 -> A9`
+- `A9 -> A10`
 
-### Route-two shortcut
-- `External Question -> A8`
-- `A8 -> A4`
-- `A4 -> A5/A6`
-- `A4/A5/A6 -> A9`
+### Parallel extraction branches
+- `A4` 提供粗描述语义底座
+- `A5` 提供事件和时间结构
+- `A6` 提供文本辅证
 
-### Parallel evidence branches
-- `A4` 负责先缩小时序范围，并把 claim 挂到候选 span 上
-- `A5` 在候选 span 内继续提取空间证据
-- `A6` 在候选 span 内继续提取文本辅证
+这三条分支最终在 `A7` 汇合，构成可被 `A8` 共同合成消费的结构骨架。
 
-这三条分支最终在 `A9` 汇合，之后由 `A9` 完成证据摘要、答案回修、严格审查和最终质量筛查。
-
-## 设计原则
+## Design Principles
 
 1. 算子只追加结果，不覆盖上游原始对象。
-2. 下游只通过对象引用消费上游产物。
-3. 每条最终标注都必须挂到至少一种显式证据上。
-4. 草案可以先于 full grounding 出现，但最终结果不能绕过 grounded 闭环。
+2. 共同合成必须依赖骨架，而不是直接对原视频自由生成。
+3. 最终数据必须经过回修与筛查。
+4. 数据血缘必须能回挂到片段、采样、结构节点和原始辅证。
 
 ## Data Lineage
 
@@ -137,25 +115,24 @@ External Question
 video_id
   -> segment_id
     -> sample_id
-      -> draft_id
-        -> query_bundle_id
-          -> event_id
-          -> region_id
-          -> text_signal_id
-            -> qa_id
-              -> verification_id
+      -> caption_id
+      -> temporal_unit_id
+      -> text_signal_id
+        -> scaffold_id
+          -> triplet_id
+            -> revision_id
+              -> quality_id
 ```
 
 这条血缘链意味着：
 
-- 标注可以回溯到时间范围
-- 标注可以回溯到样本帧
-- 标注可以回溯到最初草案、规范化 query 与最终证据对象
-- 裁决结果可以明确指出保留或拒绝原因
+- 最终 Q/A/E 可回溯到结构骨架
+- 骨架可回溯到 caption、时间结构和文本辅证
+- 最终筛查结果可以明确指出保留或拒绝原因
 
 ## Preset Architecture
 
-我们采用经典文献工作的主链路作为预设，具体请参考 [预设管线与文献对照](../02-预设管线/预设管线与文献对照.md)。
+我们采用经典文献中的结构骨架式数据构造流程作为当前默认预设，具体请参考 [预设管线与文献对照](../02-预设管线/预设管线与文献对照.md)。
 
 ## Scope
 
