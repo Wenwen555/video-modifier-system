@@ -40,7 +40,7 @@
 
 | Operator | Responsibility |
 |---|---|
-| A7 Structural Scaffold Construction | 把描述、时序结构、文本辅证、证据单元或 QA 草案组织成 chunk / pack / tree / graph / query scaffold |
+| A7 Structural Scaffold Construction | 把描述、时序结构、文本辅证、证据单元或 QA 草案组织成 narration chunk / event tree / action graph / query scaffold |
 | A8 Joint QAE Synthesis | 在骨架或草案约束下联合生成或装配 Question、Answer 和 Evidence |
 
 ### Revision and audit layer
@@ -146,7 +146,7 @@ video
 
 - `A2` 只处理低成本、局部、确定性强的清洗与编排
 - 其实现范围只保留 `MERGE_STITCH`、`WINDOW_ATTACH`、`FILTER_HINT`
-- 事件级组织、`hierarchical pack` 和骨架构造由 `A4 / A5 / A7` 负责
+- 事件级组织和高语义骨架构造由 `A4 / A5 / A7` 负责
 
 ### Route convergence rule
 对三条主要数据主线，当前系统都要求在 A7/A8 之前完成中间态规约：

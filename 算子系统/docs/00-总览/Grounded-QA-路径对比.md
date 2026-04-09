@@ -43,7 +43,7 @@
 - `A1 -> A2 -> A3`
 - `A6` 抽 narration / subtitle / ASR 文本信号
 - `A4 / A5` 可按预算补充视觉描述和时间结构
-- `A7` 构造 narration scaffold 或 caption-event scaffold
+- `A7` 构造 narration chunk
 - `A8` 共同物化 Q/A/E
 - `A9 -> A10` 完成回修与筛查
 
@@ -93,7 +93,7 @@
 - 通过 `qa_drafts[]` 导入外部 question / answer
 - `A4 / A5 / A6` 抽取候选证据
 - 规约为 `evidence_units[]`
-- `A7` 构造 query scaffold 或 verification scaffold
+- `A7` 构造 query scaffold
 - `A8` 绑定 evidence，并校验或补全 answer
 - `A9 -> A10` 完成回修与筛查
 

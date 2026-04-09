@@ -23,6 +23,9 @@ function Install-WithWinget {
     while ($attempt -le $maxAttempts) {
         try {
             winget install --source winget --id $Id -e --accept-source-agreements --accept-package-agreements --disable-interactivity
+            if ($LASTEXITCODE -ne 0) {
+                throw "winget exit code: $LASTEXITCODE"
+            }
             return $true
         }
         catch {
