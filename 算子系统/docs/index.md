@@ -99,7 +99,7 @@ hide:
   <p class="landing-subtitle">
     面向视频数据构造的高自由度算子系统。当前版本围绕 10 个原子算子组织，
     默认主链路收敛为 `A1 -> A2 -> A3 -> A4 -> A5/A6 -> A7 -> A8 -> A9 -> A10`，
-    覆盖从片段划分、结构骨架构建、Q/A/E 共同合成，到最终回修与质量筛查的完整闭环。
+    覆盖从片段划分、多粒度描述、结构骨架构建、Q/A/E 共同合成，到最终回修与质量筛查的完整闭环。
   </p>
 </div>
 
@@ -144,10 +144,10 @@ hide:
     <div class="entry-card__header">
       <span class="card-title-with-icon"><strong>算子定义</strong></span>
     </div>
-    <p class="entry-card__desc">查看 A1 到 A10 的接口、实现边界，以及“结构骨架优先”的新命名体系。</p>
+    <p class="entry-card__desc">查看 A1 到 A10 的接口、实现边界，以及“多粒度描述 + 结构骨架优先”的新命名体系。</p>
     <div class="entry-card__links">
       <a href="01-算子定义/A1-划分算子/">A1-划分算子</a>
-      <a href="01-算子定义/A4-粗Caption算子/">A4-粗Caption算子</a>
+      <a href="01-算子定义/A4-多粒度描述算子/">A4-多粒度描述算子</a>
       <a href="01-算子定义/A7-结构骨架构建算子/">A7-结构骨架构建算子</a>
       <a href="01-算子定义/A8-QAE共同合成算子/">A8-QAE共同合成算子</a>
     </div>
@@ -172,7 +172,7 @@ hide:
   <section class="operator-group">
     <p class="operator-group__eyebrow">Foundation</p>
     <h3>基础入口</h3>
-    <p class="operator-group__desc">负责把原视频切成稳定可消费的上下文单元，并完成统一采样。</p>
+    <p class="operator-group__desc">负责把原视频切片，并执行 `MERGE_STITCH`、`WINDOW_ATTACH`、`FILTER_HINT` 后再统一采样。</p>
     <div class="operator-group__chips">
       <a class="operator-chip" href="01-算子定义/A1-划分算子/"><span>A1</span>划分</a>
       <a class="operator-chip" href="01-算子定义/A2-上下文编排算子/"><span>A2</span>编排</a>
@@ -183,9 +183,9 @@ hide:
   <section class="operator-group">
     <p class="operator-group__eyebrow">Scaffold</p>
     <h3>结构骨架</h3>
-    <p class="operator-group__desc">负责粗描述、时序结构、文本辅证和骨架单元构建，是数据构造的主干。</p>
+    <p class="operator-group__desc">负责多粒度描述、时序结构、文本辅证和骨架单元构建，是数据构造的主干。</p>
     <div class="operator-group__chips">
-      <a class="operator-chip" href="01-算子定义/A4-粗Caption算子/"><span>A4</span>粗Caption</a>
+      <a class="operator-chip" href="01-算子定义/A4-多粒度描述算子/"><span>A4</span>多粒度描述</a>
       <a class="operator-chip" href="01-算子定义/A5-时序结构抽取算子/"><span>A5</span>时序结构</a>
       <a class="operator-chip" href="01-算子定义/A6-文本辅证抽取算子/"><span>A6</span>文本辅证</a>
       <a class="operator-chip" href="01-算子定义/A7-结构骨架构建算子/"><span>A7</span>结构骨架</a>
@@ -217,5 +217,5 @@ hide:
 1. 先读 [高自由度视频算子系统总览](00-总览/高自由度视频算子系统总览.md)，了解 10 个算子的整体设计和默认主链路。
 2. 再读 [Architecture](00-总览/Architecture.md)，理解系统层次、数据流和血缘关系。
 3. 然后读 [Grounded QA 路径对比](00-总览/Grounded-QA-路径对比.md)，理解“结构骨架优先”和其他 grounded QA 路线的区别。
-4. 再读 [统一中间态与数据流协议](00-总览/统一中间态与数据流协议.md)，确认 `coarse_captions`、`temporal_structures`、`scaffold_units`、`qae_triplets` 等统一对象。
+4. 再读 [统一中间态与数据流协议](00-总览/统一中间态与数据流协议.md)，确认 `description_units`、`temporal_structures`、`scaffold_units`、`qae_triplets` 等统一对象。
 5. 最后按需进入具体算子页面、预设页面和文献支撑页面。
