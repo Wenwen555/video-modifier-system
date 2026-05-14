@@ -1,0 +1,80 @@
+site_name: Video Operator System
+site_description: Documentation for the video operator system.
+docs_dir: docs
+site_dir: ../.site
+exclude_docs: |
+  99-归档/gpt总结.md
+  01-算子定义/impl/**
+
+theme:
+  name: material
+  language: zh
+  font:
+    text: Noto Sans SC
+    code: JetBrains Mono
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.tracking
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: teal
+
+plugins:
+  - search
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - 首页: index.md
+  - 总览:
+      - 总览: 00-总览/高自由度视频算子系统总览.md
+      - Architecture: 00-总览/Architecture.md
+      - Grounded QA 路径对比: 00-总览/Grounded-QA-路径对比.md
+      - 统一协议: 00-总览/统一中间态与数据流协议.md
+  - 算子定义:
+      - A1 划分算子: 01-算子定义/A1-划分算子.md
+      - A2 上下文编排算子: 01-算子定义/A2-上下文编排算子.md
+      - A3 采样算子: 01-算子定义/A3-采样算子.md
+      - A4 多粒度描述算子: 01-算子定义/A4-多粒度描述算子.md
+      - A5 时序结构抽取算子: 01-算子定义/A5-时序结构抽取算子.md
+      - A6 文本辅证抽取算子: 01-算子定义/A6-文本辅证抽取算子.md
+      - A7 结构骨架构建算子: 01-算子定义/A7-结构骨架构建算子.md
+      - A8 QAE共同合成算子: 01-算子定义/A8-QAE共同合成算子.md
+      - A9 一致性回修算子: 01-算子定义/A9-一致性回修算子.md
+      - A10 质量筛查算子: 01-算子定义/A10-质量筛查算子.md
+  - 预设管线:
+      - 预设管线与文献对照: 02-预设管线/预设管线与文献对照.md
+  - 文献支撑:
+      - 算子-论文映射: 03-文献支撑/算子-论文映射.md
+      - 文献支撑与最新趋势总结: 03-文献支撑/文献支撑与最新趋势总结.md
